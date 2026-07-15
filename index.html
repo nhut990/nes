@@ -31,7 +31,7 @@
   }
   html, body {
     margin:0; padding:0; height:100%; overscroll-behavior:none;
-    touch-action: manipulation; /* chặn zoom bằng double-tap */
+    touch-action: manipulation;
     background:
       radial-gradient(circle at 20% 10%, #1b1720 0%, var(--bg) 55%) fixed;
     color: var(--paper);
@@ -102,7 +102,6 @@
     user-select: none;
   }
   #loader.drag{ border-color: var(--accent-red); background: rgba(200,67,58,0.08); }
-  /* Sửa font cho tiêu đề loader - dùng font hệ thống để hỗ trợ tiếng Việt */
   #loader .slot-title{
     font-family: var(--font-body);
     font-size: 13px;
@@ -181,7 +180,6 @@
     background:#000;
     pointer-events: none;
   }
-  /* Sửa font cho placeholder - dùng font hệ thống để hiển thị tiếng Việt */
   #placeholder{
     position:absolute; inset:0;
     display:flex; align-items:center; justify-content:center;
@@ -341,7 +339,8 @@
     <div id="stage">
       <div id="shell">
         <div class="shell-row">
-          <span class="brand">◆ NES-101</span>
+          <!-- ĐÃ SỬA: thay NES-101 thành NES-Dang Minh Nhut -->
+          <span class="brand">◆ NES-Dang Minh Nhut</span>
           <span class="led" id="power-led"></span>
         </div>
         <div id="screen-frame">
@@ -386,11 +385,9 @@
 (function(){
   "use strict";
 
-  // ===== NGĂN CHẶN ZOOM TRÊN iOS =====
   document.addEventListener('gesturestart', function(e) { e.preventDefault(); }, { passive: false });
   document.addEventListener('gesturechange', function(e) { e.preventDefault(); }, { passive: false });
 
-  // ===== CANVAS & RENDER (Optimized for speed) =====
   var canvas = document.getElementById('screen');
   var ctx = canvas.getContext('2d', { 
     alpha: false, 
@@ -400,7 +397,6 @@
   });
   ctx.imageSmoothingEnabled = false;
   
-  // Create persistent ImageData for direct pixel manipulation
   var imageData = ctx.createImageData(256, 240);
   var buf32 = new Uint32Array(imageData.data.buffer);
   
@@ -412,7 +408,6 @@
   var frameCount = 0;
   var lastFpsUpdate = 0;
 
-  // ===== AUDIO (Improved: better buffer management) =====
   var audioCtx = null;
   var scriptNode = null;
   var gainNode = null;
@@ -431,7 +426,7 @@
     audioCtx = new AC({ sampleRate: 44100 });
     
     gainNode = audioCtx.createGain();
-    gainNode.gain.value = muted ? 0 : 0.3; // Softer default volume
+    gainNode.gain.value = muted ? 0 : 0.3;
     
     scriptNode = audioCtx.createScriptProcessor(2048, 0, 2);
     scriptNode.onaudioprocess = function(e){
@@ -447,7 +442,6 @@
           audioBuffer.readIdx = (audioBuffer.readIdx + 1) % AUDIO_BUFFER_SIZE;
         }
       } else {
-        // Underrun - fill with silence
         for (var i = 0; i < n; i++){
           outL[i] = 0;
           outR[i] = 0;
@@ -459,22 +453,17 @@
     gainNode.connect(audioCtx.destination);
   }
 
-  // ===== NES CORE =====
   var nes = new jsnes.NES({
     onFrame: function(frameBuffer){
       if (skipRender) return;
-      
-      // Direct 32-bit copy (much faster than per-pixel)
       for (var i = 0; i < 256 * 240; i++){
         buf32[i] = 0xff000000 | frameBuffer[i];
       }
-      
       ctx.putImageData(imageData, 0, 0);
       frameCount++;
     },
     onAudioSample: function(left, right){
       var nextIdx = (audioBuffer.writeIdx + 1) % AUDIO_BUFFER_SIZE;
-      // Only write if buffer not full
       if (nextIdx !== audioBuffer.readIdx){
         audioBuffer.left[audioBuffer.writeIdx] = left;
         audioBuffer.right[audioBuffer.writeIdx] = right;
@@ -487,13 +476,12 @@
   var romLoaded = false;
   var running = false;
   var rafId = null;
-  var FRAME_MS = 1000 / 60.0988; // NES accurate rate
-  var MAX_CATCHUP_FRAMES = 3; // Reduced from 4 for stability
+  var FRAME_MS = 1000 / 60.0988;
+  var MAX_CATCHUP_FRAMES = 3;
   var lastRomData = null;
   var accumulator = 0;
   var lastTime = 0;
 
-  // Performance monitoring
   var perfData = { fps: 0, audioStatus: 'OK' };
   setInterval(function(){
     perfData.fps = frameCount;
@@ -509,7 +497,6 @@
     var delta = now - lastTime;
     lastTime = now;
     
-    // Clamp delta to avoid spiral on tab resume
     if (delta > 250) delta = 250;
     if (delta < 0) delta = 0;
     
@@ -528,7 +515,6 @@
       nes.frame();
     }
     
-    // Update audio status
     if (audioCtx){
       var avail = (audioBuffer.writeIdx - audioBuffer.readIdx + AUDIO_BUFFER_SIZE) % AUDIO_BUFFER_SIZE;
       if (avail < 512) perfData.audioStatus = 'LOW';
@@ -568,7 +554,6 @@
     }
   }
 
-  // ===== FILE LOADING =====
   var loaderEl = document.getElementById('loader');
   var fileInput = document.getElementById('rom-input');
   
@@ -601,7 +586,6 @@
   });
   
   function readFile(f){
-    // Use ArrayBuffer instead of deprecated readAsBinaryString
     var reader = new FileReader();
     reader.onload = function(){
       var arr = new Uint8Array(reader.result);
@@ -610,7 +594,6 @@
     reader.readAsArrayBuffer(f);
   }
 
-  // ===== HEADER BUTTONS =====
   document.getElementById('btn-mute').addEventListener('click', function(e){
     ensureAudio();
     muted = !muted;
@@ -650,13 +633,11 @@
     }
   });
 
-  // ===== CONTROLLER =====
   var C = jsnes.Controller;
   function vibrate(ms){ if (navigator.vibrate) navigator.vibrate(ms); }
   function down(btn){ nes.buttonDown(1, btn); }
   function up(btn){ nes.buttonUp(1, btn); }
 
-  // D-Pad: 8-way angle detection
   var dpadTouch = document.getElementById('dpad-touch');
   var dpadActivePointer = null;
   var dpadState = { up:false, down:false, left:false, right:false };
@@ -738,7 +719,6 @@
   dpadTouch.addEventListener('pointerup', dpadRelease);
   dpadTouch.addEventListener('pointercancel', dpadRelease);
 
-  // Button binding (supports multitouch) - NO double-tap zoom
   function bindButton(el, jsBtn, opts){
     opts = opts || {};
     var activePointers = new Set();
@@ -780,7 +760,6 @@
       e.preventDefault();
     });
     
-    // Prevent context menu
     el.addEventListener('contextmenu', function(e){ e.preventDefault(); });
     
     return { 
@@ -794,7 +773,6 @@
   var btnStart = bindButton(document.getElementById('btn-start'), C.BUTTON_START);
   var btnSelect = bindButton(document.getElementById('btn-select'), C.BUTTON_SELECT);
 
-  // Keyboard support
   var keyMap = {
     ArrowUp:'up', ArrowDown:'down', ArrowLeft:'left', ArrowRight:'right'
   };
@@ -823,12 +801,10 @@
     else if (e.key === 'Shift'){ btnSelect.release(); e.preventDefault(); }
   });
 
-  // Audio context unlock on first interaction
   document.body.addEventListener('pointerdown', function(){
     if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
   }, { passive:true });
   
-  // Disable double-tap zoom on entire page (bổ sung)
   var lastTouchTime = 0;
   document.addEventListener('touchstart', function(e) {
     var currentTime = new Date().getTime();
