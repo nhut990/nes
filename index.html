@@ -289,7 +289,11 @@
     padding: 1px 5px; font-size:10px;
   }
 
-  @media (orientation: landscape) and (max-height: 560px){
+  /* FIX: chỉ áp dụng layout landscape thu gọn cho THIẾT BỊ CẢM ỨNG THẬT SỰ
+     (điện thoại/tablet xoay ngang) — thêm (hover: none) và (pointer: coarse)
+     để loại trừ desktop/laptop dùng chuột, tránh việc thu nhỏ cửa sổ hoặc
+     zoom trình duyệt vô tình làm ẩn mất khung nạp ROM (#loader). */
+  @media (orientation: landscape) and (max-height: 560px) and (hover: none) and (pointer: coarse){
     #app{ flex-direction:column; }
     #loader{ display:none; }
     #main{
