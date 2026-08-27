@@ -168,10 +168,9 @@ button:active,.control.pressed{
   padding:4px 2px 0;
 }
 
-/* Tăng kích thước D-pad */
 .dpad{
   position:relative;
-  width:clamp(160px, 32vw, 180px);   /* tăng từ 140-160 lên 160-180 */
+  width:clamp(160px, 32vw, 180px);
   height:clamp(160px, 32vw, 180px);
   flex:none;
 }
@@ -193,7 +192,7 @@ button:active,.control.pressed{
   width:34%;
   height:34%;
   border-radius:10px;
-  font-size:clamp(20px, 6vw, 28px);   /* tăng font-size */
+  font-size:clamp(20px, 6vw, 28px);
 }
 
 .up{top:0;left:33%}
@@ -213,24 +212,23 @@ button:active,.control.pressed{
 .right-controls{
   display:flex;
   align-items:center;
-  gap:clamp(12px, 3vw, 18px);   /* tăng gap */
+  gap:clamp(12px, 3vw, 18px);
   flex:none;
   padding-right:2px;
 }
 
-/* Tăng kích thước nút tròn */
 .round{
   position:relative;
-  width:clamp(75px, 18vw, 90px);   /* tăng từ 65-75 lên 75-90 */
+  width:clamp(75px, 18vw, 90px);
   height:clamp(75px, 18vw, 90px);
   border-radius:50%;
-  font-size:clamp(20px, 6vw, 30px); /* tăng font-size */
+  font-size:clamp(20px, 6vw, 30px);
   background:linear-gradient(145deg,#ff7180,#bd2548);
   border-color:#ff9eaa;
 }
 
 .round.b{
-  margin-top:clamp(30px, 6vw, 40px); /* tăng margin-top */
+  margin-top:clamp(30px, 6vw, 40px);
   background:linear-gradient(145deg,#6e9bff,#375fd7);
   border-color:#a6bfff;
 }
@@ -356,7 +354,7 @@ let audioQueue = [];
 
 // ====== CHẶN GESTURE ZOOM ======
 document.addEventListener('gesturestart', function(e) {
-  e.preventDefault();                 // chặn cử chỉ zoom/pan trên iOS
+  e.preventDefault();
 });
 
 // Kiểm tra jsnes đã tải chưa
@@ -470,7 +468,7 @@ function loadROM(buffer) {
       throw new Error("File không phải ROM NES hợp lệ hoặc bị hỏng.");
     }
 
-    createNES();                // tạo lại NES với trạng thái mới
+    createNES();
     nes.loadROM(binaryStringFromArrayBuffer(buffer));
 
     gameLoaded = true;
@@ -610,44 +608,55 @@ fileInput.addEventListener("change", function(event) {
     alert("Không thể đọc file.");
   };
   reader.readAsArrayBuffer(file);
-  fileInput.value = ""; // reset để có thể chọn lại cùng file
+  fileInput.value = "";
 });
 
-// ====== Gán sự kiện TOUCH cho các nút điều khiển ======
+// ====== GÂN SỰ KIỆN TOUCH CHO CÁC NÚT ĐIỀU KHIỂN (FIXED VERSION) ======
 document.querySelectorAll("[data-key]").forEach(button => {
   const key = button.dataset.key;
-  let activeTouchId = null;   // lưu identifier của touch đang giữ nút này
+  const activeTouches = new Set();  // ✅ Dùng Set để track touch IDs của button này
 
   function press(event) {
-    event.preventDefault();   // chặn hành vi mặc định (zoom, scroll)
-    if (activeTouchId !== null) return; // nếu đã có ngón giữ nút này thì bỏ qua
-
+    event.preventDefault();
+    
+    if (event.changedTouches.length === 0) return;
+    
     const touch = event.changedTouches[0];
-    activeTouchId = touch.identifier;
-
+    
+    // Kiểm tra xem touch này đã được track chưa
+    if (activeTouches.has(touch.identifier)) return;
+    
+    activeTouches.add(touch.identifier);  // ✅ Thêm vào Set
     button.classList.add("pressed");
     setButton(key, true);
   }
 
   function release(event) {
     event.preventDefault();
-    if (activeTouchId === null) return;
-
-    // Kiểm tra xem touch kết thúc có phải touch đang giữ không
+    
+    if (event.changedTouches.length === 0) return;
+    
+    // Kiểm tra xem touch kết thúc có phải touch đang giữ nút này không
     for (let i = 0; i < event.changedTouches.length; i++) {
-      if (event.changedTouches[i].identifier === activeTouchId) {
-        activeTouchId = null;
-        button.classList.remove("pressed");
-        setButton(key, false);
+      const touchId = event.changedTouches[i].identifier;
+      
+      if (activeTouches.has(touchId)) {
+        activeTouches.delete(touchId);  // ✅ Xóa khỏi Set
+        
+        // Chỉ remove "pressed" khi không còn touch nào giữ nút này
+        if (activeTouches.size === 0) {
+          button.classList.remove("pressed");
+          setButton(key, false);
+        }
         break;
       }
     }
   }
 
-  // Touch events
+  // ✅ Thêm { passive: false } cho tất cả touch events
   button.addEventListener('touchstart', press, { passive: false });
-  button.addEventListener('touchend', release);
-  button.addEventListener('touchcancel', release);
+  button.addEventListener('touchend', release, { passive: false });
+  button.addEventListener('touchcancel', release, { passive: false });
 });
 
 // ====== Bàn phím (hỗ trợ desktop) ======
