@@ -168,10 +168,11 @@ button:active,.control.pressed{
   padding:4px 2px 0;
 }
 
+/* Tăng kích thước D-pad */
 .dpad{
   position:relative;
-  width:clamp(140px, 28vw, 160px);
-  height:clamp(140px, 28vw, 160px);
+  width:clamp(160px, 32vw, 180px);   /* tăng từ 140-160 lên 160-180 */
+  height:clamp(160px, 32vw, 180px);
   flex:none;
 }
 
@@ -192,7 +193,7 @@ button:active,.control.pressed{
   width:34%;
   height:34%;
   border-radius:10px;
-  font-size:clamp(18px, 5vw, 24px);
+  font-size:clamp(20px, 6vw, 28px);   /* tăng font-size */
 }
 
 .up{top:0;left:33%}
@@ -212,23 +213,24 @@ button:active,.control.pressed{
 .right-controls{
   display:flex;
   align-items:center;
-  gap:clamp(10px, 2.5vw, 16px);
+  gap:clamp(12px, 3vw, 18px);   /* tăng gap */
   flex:none;
   padding-right:2px;
 }
 
+/* Tăng kích thước nút tròn */
 .round{
   position:relative;
-  width:clamp(65px, 15vw, 75px);
-  height:clamp(65px, 15vw, 75px);
+  width:clamp(75px, 18vw, 90px);   /* tăng từ 65-75 lên 75-90 */
+  height:clamp(75px, 18vw, 90px);
   border-radius:50%;
-  font-size:clamp(16px, 5vw, 24px);
+  font-size:clamp(20px, 6vw, 30px); /* tăng font-size */
   background:linear-gradient(145deg,#ff7180,#bd2548);
   border-color:#ff9eaa;
 }
 
 .round.b{
-  margin-top:clamp(25px, 5vw, 35px);
+  margin-top:clamp(30px, 6vw, 40px); /* tăng margin-top */
   background:linear-gradient(145deg,#6e9bff,#375fd7);
   border-color:#a6bfff;
 }
@@ -240,7 +242,7 @@ button:active,.control.pressed{
   left:50%;
   transform:translateX(-50%);
   color:#c7d2ed;
-  font-size:clamp(9px, 2vw, 11px);
+  font-size:clamp(10px, 2.5vw, 12px);
   font-weight:800;
 }
 
@@ -253,12 +255,12 @@ button:active,.control.pressed{
 }
 
 .middle{
-  min-width:clamp(60px, 18vw, 84px);
-  min-height:clamp(28px, 6vh, 34px);
+  min-width:clamp(70px, 20vw, 90px);
+  min-height:clamp(32px, 7vh, 38px);
   padding:0 12px;
   border-radius:20px;
   color:#d5def5;
-  font-size:clamp(10px, 2.2vw, 11px);
+  font-size:clamp(11px, 2.5vw, 13px);
 }
 
 .hint{
@@ -272,9 +274,9 @@ button:active,.control.pressed{
 @media(max-height:640px){
   .app{gap:6px; padding:8px 10px 12px;}
   .screen-box{max-height:38vh;}
-  .dpad{width:clamp(120px, 25vw, 140px); height:clamp(120px, 25vw, 140px);}
-  .round{width:clamp(55px, 14vw, 65px); height:clamp(55px, 14vw, 65px);}
-  .round.b{margin-top:clamp(18px, 4vw, 25px);}
+  .dpad{width:clamp(140px, 30vw, 160px); height:clamp(140px, 30vw, 160px);}
+  .round{width:clamp(65px, 16vw, 75px); height:clamp(65px, 16vw, 75px);}
+  .round.b{margin-top:clamp(20px, 5vw, 30px);}
   .middle{margin-top:2px;}
 }
 </style>
@@ -300,7 +302,7 @@ button:active,.control.pressed{
   <div class="top-actions">
     <button id="pauseButton">Tạm dừng</button>
     <button id="soundButton">Âm thanh: Bật</button>
-    <button id="openFileButton">Mở file</button>
+    <button id="openFileButton">Mở file .nes</button>
   </div>
 
   <div class="controls">
@@ -538,7 +540,7 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
-// ====== Điều khiển nút (dùng touch events) ======
+// ====== Điều khiển nút ======
 function setButton(key, isDown) {
   if (!gameLoaded || !nes || !Object.prototype.hasOwnProperty.call(buttons, key)) return;
 
