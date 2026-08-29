@@ -261,14 +261,6 @@ button:active,.control.pressed{
   font-size:clamp(11px, 2.5vw, 13px);
 }
 
-.hint{
-  text-align:center;
-  color:#8f9dbc;
-  font-size:clamp(9px, 2vw, 11px);
-  line-height:1.4;
-  flex:0 0 auto;
-}
-
 @media(max-height:640px){
   .app{gap:6px; padding:8px 10px 12px;}
   .screen-box{max-height:38vh;}
@@ -323,7 +315,7 @@ button:active,.control.pressed{
     <button class="middle" data-key="START">START</button>
   </div>
 
-  <div class="hint">Chạm một nút bất kỳ để bật âm thanh trên iPhone</div>
+  <!-- Dòng hint đã bị xóa -->
 </div>
 
 <input type="file" id="fileInput" accept=".nes" style="display:none">
@@ -611,10 +603,10 @@ fileInput.addEventListener("change", function(event) {
   fileInput.value = "";
 });
 
-// ====== GÂN SỰ KIỆN TOUCH CHO CÁC NÚT ĐIỀU KHIỂN (FIXED VERSION) ======
+// ====== GÂN SỰ KIỆN TOUCH CHO CÁC NÚT ĐIỀU KHIỂN ======
 document.querySelectorAll("[data-key]").forEach(button => {
   const key = button.dataset.key;
-  const activeTouches = new Set();  // ✅ Dùng Set để track touch IDs của button này
+  const activeTouches = new Set();
 
   function press(event) {
     event.preventDefault();
@@ -623,10 +615,9 @@ document.querySelectorAll("[data-key]").forEach(button => {
     
     const touch = event.changedTouches[0];
     
-    // Kiểm tra xem touch này đã được track chưa
     if (activeTouches.has(touch.identifier)) return;
     
-    activeTouches.add(touch.identifier);  // ✅ Thêm vào Set
+    activeTouches.add(touch.identifier);
     button.classList.add("pressed");
     setButton(key, true);
   }
@@ -636,14 +627,12 @@ document.querySelectorAll("[data-key]").forEach(button => {
     
     if (event.changedTouches.length === 0) return;
     
-    // Kiểm tra xem touch kết thúc có phải touch đang giữ nút này không
     for (let i = 0; i < event.changedTouches.length; i++) {
       const touchId = event.changedTouches[i].identifier;
       
       if (activeTouches.has(touchId)) {
-        activeTouches.delete(touchId);  // ✅ Xóa khỏi Set
+        activeTouches.delete(touchId);
         
-        // Chỉ remove "pressed" khi không còn touch nào giữ nút này
         if (activeTouches.size === 0) {
           button.classList.remove("pressed");
           setButton(key, false);
@@ -653,7 +642,6 @@ document.querySelectorAll("[data-key]").forEach(button => {
     }
   }
 
-  // ✅ Thêm { passive: false } cho tất cả touch events
   button.addEventListener('touchstart', press, { passive: false });
   button.addEventListener('touchend', release, { passive: false });
   button.addEventListener('touchcancel', release, { passive: false });
