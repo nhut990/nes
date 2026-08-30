@@ -2,9 +2,14 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Super Mario Bros - NES</title>
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+>
+<title>NES Emulator</title>
+
 <script src="https://cdn.jsdelivr.net/npm/jsnes@1.2.1/dist/jsnes.js"></script>
+
 <style>
 *{
   box-sizing:border-box;
@@ -15,21 +20,25 @@
 }
 
 :root{
-  --bg:#0a0f1d;
-  --panel:#161f36;
-  --border:#3b4c73;
   --text:#eef3ff;
   --muted:#9ba9ca;
+  --border:#3b4c73;
+}
+
+html,
+body{
+  overscroll-behavior:none;
 }
 
 body{
   margin:0;
   height:100vh;
   height:100dvh;
-  background:radial-gradient(circle at top,#293965 0%,#11192f 44%,#070b15 100%);
+  overflow:hidden;
   color:var(--text);
   font-family:Arial,Helvetica,sans-serif;
-  overflow:hidden;
+  background:
+    radial-gradient(circle at top,#293965 0%,#11192f 44%,#070b15 100%);
   touch-action:none;
 }
 
@@ -49,52 +58,62 @@ body{
   align-items:center;
   justify-content:space-between;
   gap:12px;
-  flex:0 0 auto;
+  flex:none;
 }
 
 .brand{
   display:flex;
   align-items:center;
   gap:10px;
-  font-size:clamp(14px, 3vw, 18px);
+  min-width:0;
+  font-size:clamp(14px,3vw,18px);
   font-weight:800;
   letter-spacing:.5px;
 }
 
 .brand-icon{
-  width:clamp(34px, 7vw, 40px);
-  height:clamp(23px, 5vw, 27px);
   display:grid;
+  width:clamp(34px,7vw,40px);
+  height:clamp(23px,5vw,27px);
+  flex:none;
   place-items:center;
   border:2px solid #fff;
   border-radius:8px;
   background:linear-gradient(145deg,#ff6578,#bc2447);
   box-shadow:0 4px 10px rgba(0,0,0,.3);
-  font-size:clamp(10px, 2vw, 12px);
+  font-size:clamp(10px,2vw,12px);
+}
+
+.brand-name{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 
 .status{
-  max-width:56%;
+  max-width:52%;
   overflow:hidden;
-  white-space:nowrap;
-  text-overflow:ellipsis;
   color:var(--muted);
-  font-size:clamp(10px, 2vw, 12px);
+  font-size:clamp(10px,2vw,12px);
   text-align:right;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 
 .screen-box{
   position:relative;
   width:100%;
-  flex:1 1 auto;
   min-height:0;
-  aspect-ratio:4/3;
   max-height:42vh;
+  flex:1 1 auto;
   overflow:hidden;
   border:5px solid #394866;
   border-radius:16px;
   background:#000;
-  box-shadow:0 15px 35px rgba(0,0,0,.4),inset 0 0 0 2px rgba(255,255,255,.05);
+  aspect-ratio:4 / 3;
+  box-shadow:
+    0 15px 35px rgba(0,0,0,.4),
+    inset 0 0 0 2px rgba(255,255,255,.05);
 }
 
 canvas{
@@ -120,12 +139,12 @@ canvas{
 }
 
 .screen-message strong{
-  font-size:clamp(16px, 4vw, 20px);
+  font-size:clamp(16px,4vw,20px);
 }
 
 .screen-message span{
   color:#b0bddc;
-  font-size:clamp(11px, 2.5vw, 13px);
+  font-size:clamp(11px,2.5vw,13px);
   line-height:1.5;
 }
 
@@ -133,28 +152,34 @@ canvas{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:8px;
-  flex:0 0 auto;
+  flex:none;
 }
 
 button{
-  min-height:clamp(38px, 8vh, 46px);
+  min-height:clamp(38px,8vh,46px);
+  padding:0 8px;
   border:1px solid var(--border);
   border-radius:12px;
   color:var(--text);
   background:linear-gradient(145deg,#293756,#151d31);
-  box-shadow:0 4px 0 #080c16,0 7px 14px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.12);
+  box-shadow:
+    0 4px 0 #080c16,
+    0 7px 14px rgba(0,0,0,.2),
+    inset 0 1px rgba(255,255,255,.12);
   font:inherit;
+  font-size:clamp(11px,2.5vw,14px);
   font-weight:700;
   cursor:pointer;
-  touch-action:manipulation;
-  padding:0 8px;
-  font-size:clamp(11px, 2.5vw, 14px);
   white-space:nowrap;
+  touch-action:manipulation;
 }
 
-button:active,.control.pressed{
+button:active,
+.control.pressed{
   transform:translateY(3px) scale(.98);
-  box-shadow:0 1px 0 #080c16,inset 0 2px 8px rgba(0,0,0,.42);
+  box-shadow:
+    0 1px 0 #080c16,
+    inset 0 2px 8px rgba(0,0,0,.42);
   filter:brightness(.88);
 }
 
@@ -163,15 +188,15 @@ button:active,.control.pressed{
   align-items:center;
   justify-content:space-between;
   gap:10px;
-  flex:1 1 auto;
   min-height:0;
+  flex:1 1 auto;
   padding:4px 2px 0;
 }
 
 .dpad{
   position:relative;
-  width:clamp(160px, 32vw, 180px);
-  height:clamp(160px, 32vw, 180px);
+  width:clamp(160px,32vw,180px);
+  height:clamp(160px,32vw,180px);
   flex:none;
 }
 
@@ -182,7 +207,10 @@ button:active,.control.pressed{
   border:2px solid #566783;
   color:#fff;
   background:linear-gradient(145deg,#465875,#202b42);
-  box-shadow:0 5px 0 #0a0f1d,0 8px 14px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.16);
+  box-shadow:
+    0 5px 0 #0a0f1d,
+    0 8px 14px rgba(0,0,0,.28),
+    inset 0 1px rgba(255,255,255,.16);
   font-weight:900;
   cursor:pointer;
   touch-action:none;
@@ -192,13 +220,28 @@ button:active,.control.pressed{
   width:34%;
   height:34%;
   border-radius:10px;
-  font-size:clamp(20px, 6vw, 28px);
+  font-size:clamp(20px,6vw,28px);
 }
 
-.up{top:0;left:33%}
-.down{bottom:0;left:33%}
-.left{left:0;top:33%}
-.right{right:0;top:33%}
+.up{
+  top:0;
+  left:33%;
+}
+
+.down{
+  bottom:0;
+  left:33%;
+}
+
+.left{
+  top:33%;
+  left:0;
+}
+
+.right{
+  top:33%;
+  right:0;
+}
 
 .dpad-center{
   position:absolute;
@@ -212,23 +255,23 @@ button:active,.control.pressed{
 .right-controls{
   display:flex;
   align-items:center;
-  gap:clamp(12px, 3vw, 18px);
+  gap:clamp(12px,3vw,18px);
   flex:none;
   padding-right:2px;
 }
 
 .round{
   position:relative;
-  width:clamp(75px, 18vw, 90px);
-  height:clamp(75px, 18vw, 90px);
+  width:clamp(75px,18vw,90px);
+  height:clamp(75px,18vw,90px);
   border-radius:50%;
-  font-size:clamp(20px, 6vw, 30px);
+  font-size:clamp(20px,6vw,30px);
   background:linear-gradient(145deg,#ff7180,#bd2548);
   border-color:#ff9eaa;
 }
 
 .round.b{
-  margin-top:clamp(30px, 6vw, 40px);
+  margin-top:clamp(30px,6vw,40px);
   background:linear-gradient(145deg,#6e9bff,#375fd7);
   border-color:#a6bfff;
 }
@@ -240,7 +283,7 @@ button:active,.control.pressed{
   left:50%;
   transform:translateX(-50%);
   color:#c7d2ed;
-  font-size:clamp(10px, 2.5vw, 12px);
+  font-size:clamp(10px,2.5vw,12px);
   font-weight:800;
 }
 
@@ -248,41 +291,214 @@ button:active,.control.pressed{
   display:flex;
   justify-content:center;
   gap:12px;
-  flex:0 0 auto;
+  flex:none;
   margin-top:4px;
 }
 
 .middle{
-  min-width:clamp(70px, 20vw, 90px);
-  min-height:clamp(32px, 7vh, 38px);
+  position:relative;
+  min-width:clamp(70px,20vw,90px);
+  min-height:clamp(32px,7vh,38px);
   padding:0 12px;
   border-radius:20px;
   color:#d5def5;
-  font-size:clamp(11px, 2.5vw, 13px);
+  font-size:clamp(11px,2.5vw,13px);
+}
+
+/* ===== MENU GAME KHÁC ===== */
+.game-modal{
+  position:fixed;
+  z-index:100;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(2,5,13,.75);
+  backdrop-filter:blur(7px);
+}
+
+.game-modal.show{
+  display:flex;
+  animation:modalFade .18s ease;
+}
+
+.game-modal-card{
+  width:min(100%,455px);
+  overflow:hidden;
+  border:1px solid rgba(142,172,240,.42);
+  border-radius:19px;
+  background:linear-gradient(145deg,#26385f,#111a2e);
+  box-shadow:
+    0 22px 55px rgba(0,0,0,.58),
+    inset 0 1px rgba(255,255,255,.14);
+  animation:modalPop .22s cubic-bezier(.2,1.3,.4,1);
+}
+
+.game-modal-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:17px 17px 14px;
+  border-bottom:1px solid rgba(153,183,245,.2);
+}
+
+.game-modal-header strong{
+  display:block;
+  color:#f3f6ff;
+  font-size:16px;
+  letter-spacing:.6px;
+}
+
+.game-modal-header span{
+  display:block;
+  margin-top:5px;
+  color:#aab9d8;
+  font-size:11px;
+}
+
+.close-game-modal{
+  display:grid;
+  width:36px;
+  min-height:36px;
+  flex:none;
+  place-items:center;
+  padding:0;
+  border-radius:50%;
+  color:#dce8ff;
+  font-size:17px;
+}
+
+.game-list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding:14px;
+}
+
+.game-item{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  width:100%;
+  min-height:70px;
+  padding:10px 12px;
+  border:1px solid rgba(143,178,248,.3);
+  border-radius:13px;
+  color:#eff4ff;
+  text-align:left;
+  background:linear-gradient(145deg,#334b78,#1a2742);
+}
+
+.game-item:hover{
+  filter:brightness(1.13);
+}
+
+.game-item:active{
+  transform:translateY(2px) scale(.99);
+}
+
+.local-game{
+  background:linear-gradient(145deg,#576183,#2b3450);
+}
+
+.game-icon{
+  display:grid;
+  width:43px;
+  height:43px;
+  flex:none;
+  place-items:center;
+  border-radius:11px;
+  background:rgba(8,14,29,.42);
+  font-size:23px;
+}
+
+.game-info{
+  min-width:0;
+}
+
+.game-info strong{
+  display:block;
+  overflow:hidden;
+  color:#f2f6ff;
+  font-size:14px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.game-info small{
+  display:block;
+  overflow:hidden;
+  margin-top:5px;
+  color:#b5c4e1;
+  font-size:11px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.game-ready{
+  color:#8ff3b7 !important;
+}
+
+@keyframes modalFade{
+  from{ opacity:0; }
+  to{ opacity:1; }
+}
+
+@keyframes modalPop{
+  from{
+    transform:scale(.88) translateY(10px);
+    opacity:0;
+  }
+
+  to{
+    transform:scale(1) translateY(0);
+    opacity:1;
+  }
 }
 
 @media(max-height:640px){
-  .app{gap:6px; padding:8px 10px 12px;}
-  .screen-box{max-height:38vh;}
-  .dpad{width:clamp(140px, 30vw, 160px); height:clamp(140px, 30vw, 160px);}
-  .round{width:clamp(65px, 16vw, 75px); height:clamp(65px, 16vw, 75px);}
-  .round.b{margin-top:clamp(20px, 5vw, 30px);}
-  .middle{margin-top:2px;}
+  .app{
+    gap:6px;
+    padding:8px 10px 12px;
+  }
+
+  .screen-box{
+    max-height:38vh;
+  }
+
+  .dpad{
+    width:clamp(140px,30vw,160px);
+    height:clamp(140px,30vw,160px);
+  }
+
+  .round{
+    width:clamp(65px,16vw,75px);
+    height:clamp(65px,16vw,75px);
+  }
+
+  .round.b{
+    margin-top:clamp(20px,5vw,30px);
+  }
 }
 </style>
 </head>
+
 <body>
 <div class="app">
   <div class="header">
     <div class="brand">
       <div class="brand-icon">NES</div>
-      SUPER MARIO BROS
+      <span class="brand-name" id="gameTitle">SUPER MARIO BROS</span>
     </div>
-    <div class="status" id="status">Đang tải game...</div>
+
+    <div class="status" id="status">Đang chuẩn bị...</div>
   </div>
 
   <div class="screen-box">
     <canvas id="screen" width="256" height="240"></canvas>
+
     <div class="screen-message" id="screenMessage">
       <strong>Đang tải Super Mario Bros</strong>
       <span>Vui lòng chờ trong giây lát...</span>
@@ -292,7 +508,7 @@ button:active,.control.pressed{
   <div class="top-actions">
     <button id="pauseButton">Tạm dừng</button>
     <button id="soundButton">Âm thanh: Bật</button>
-    <button id="openFileButton">Mở file .nes</button>
+    <button id="gameButton">Game khác</button>
   </div>
 
   <div class="controls">
@@ -314,54 +530,127 @@ button:active,.control.pressed{
     <button class="middle" data-key="SELECT">SELECT</button>
     <button class="middle" data-key="START">START</button>
   </div>
-
-  <!-- Dòng hint đã bị xóa -->
 </div>
 
 <input type="file" id="fileInput" accept=".nes" style="display:none">
 
-<script>
-// ====== LINK ROM MẶC ĐỊNH ======
-const DEFAULT_ROM_URL = "https://raw.githubusercontent.com/nhut990/files/main/hinh/SuperMarioBros.nes";
+<!-- MENU GAME KHÁC -->
+<div class="game-modal" id="gameModal">
+  <div class="game-modal-card">
+    <div class="game-modal-header">
+      <div>
+        <strong>GAME KHÁC</strong>
+        <span>Mở ROM từ máy hoặc chọn game có sẵn</span>
+      </div>
 
+      <button
+        id="closeGameModal"
+        class="close-game-modal"
+        aria-label="Đóng menu game"
+      >✕</button>
+    </div>
+
+    <div class="game-list">
+      <button class="game-item local-game" id="openFileButton">
+        <span class="game-icon">📁</span>
+        <span class="game-info">
+          <strong>Mở file .nes từ máy</strong>
+          <small>Chọn ROM NES trong điện thoại hoặc máy tính</small>
+        </span>
+      </button>
+
+      <button class="game-item" id="contraButton">
+        <span class="game-icon">🎮</span>
+        <span class="game-info">
+          <strong>Contra</strong>
+          <small id="contraStatus">Đang tải sẵn game...</small>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   LINK ROM
+========================================================= */
+const DEFAULT_ROM_URL =
+  "https://raw.githubusercontent.com/nhut990/files/main/hinh/SuperMarioBros.nes";
+
+const CONTRA_ROM_URL =
+  "https://raw.githubusercontent.com/nhut990/files/main/music/021%20Contra.nes";
+
+const DEFAULT_GAME_NAME = "Super Mario Bros";
+const CONTRA_GAME_NAME = "Contra";
+
+/* =========================================================
+   KHAI BÁO GIAO DIỆN
+========================================================= */
 const canvas = document.getElementById("screen");
-const ctx = canvas.getContext("2d", { alpha: false });
+const ctx = canvas.getContext("2d", { alpha:false });
 const imageData = ctx.createImageData(256, 240);
 const pixels = imageData.data;
 
 const status = document.getElementById("status");
+const gameTitle = document.getElementById("gameTitle");
 const screenMessage = document.getElementById("screenMessage");
+
 const pauseButton = document.getElementById("pauseButton");
 const soundButton = document.getElementById("soundButton");
+const gameButton = document.getElementById("gameButton");
+
+const gameModal = document.getElementById("gameModal");
+const closeGameModal = document.getElementById("closeGameModal");
+
 const openFileButton = document.getElementById("openFileButton");
 const fileInput = document.getElementById("fileInput");
 
+const contraButton = document.getElementById("contraButton");
+const contraStatus = document.getElementById("contraStatus");
+
+/* =========================================================
+   TRẠNG THÁI GAME
+========================================================= */
 let nes = null;
 let gameLoaded = false;
 let paused = false;
 let soundEnabled = true;
+
 let audioContext = null;
 let audioNode = null;
 let audioQueue = [];
 
-// ====== CHẶN GESTURE ZOOM ======
-document.addEventListener('gesturestart', function(e) {
-  e.preventDefault();
-});
+/*
+  Bộ nhớ ROM đã tải.
+  Contra sẽ được lưu ArrayBuffer ở đây sau khi trang mở.
+*/
+let contraROMBuffer = null;
+let contraPreloadPromise = null;
+let contraPreloadError = null;
 
-// Kiểm tra jsnes đã tải chưa
-if (typeof jsnes === 'undefined') {
-  status.textContent = "Lỗi: Không thể tải thư viện jsnes";
-  screenMessage.innerHTML = "";
-  const strong = document.createElement("strong");
-  strong.textContent = "Lỗi thư viện";
-  const span = document.createElement("span");
-  span.textContent = "Vui lòng kiểm tra kết nối mạng và tải lại trang.";
-  screenMessage.appendChild(strong);
-  screenMessage.appendChild(span);
+/*
+  Tránh trường hợp game tải cũ hoàn tất muộn và ghi đè
+  lên game mới mà người dùng vừa chọn.
+*/
+let loadToken = 0;
+
+/* =========================================================
+   KIỂM TRA JSNES
+========================================================= */
+if (typeof jsnes === "undefined") {
+  status.textContent = "Không tải được thư viện jsnes";
+
+  showScreenMessage(
+    "Lỗi thư viện",
+    "Không thể tải jsnes. Hãy kiểm tra mạng rồi tải lại trang."
+  );
+
   throw new Error("jsnes is not loaded");
 }
 
+/* =========================================================
+   PHÍM NES
+========================================================= */
 const buttons = {
   UP: jsnes.Controller.BUTTON_UP,
   DOWN: jsnes.Controller.BUTTON_DOWN,
@@ -373,32 +662,73 @@ const buttons = {
   START: jsnes.Controller.BUTTON_START
 };
 
-// ====== Âm thanh ======
+/* =========================================================
+   THÔNG BÁO MÀN HÌNH
+========================================================= */
+function showScreenMessage(title, text) {
+  screenMessage.style.display = "flex";
+  screenMessage.innerHTML = "";
+
+  const strong = document.createElement("strong");
+  strong.textContent = title;
+
+  const span = document.createElement("span");
+  span.textContent = text;
+
+  screenMessage.appendChild(strong);
+  screenMessage.appendChild(span);
+}
+
+function hideScreenMessage() {
+  screenMessage.style.display = "none";
+}
+
+function formatBytes(bytes) {
+  if (!bytes) return "0 KB";
+
+  if (bytes < 1024) {
+    return bytes + " B";
+  }
+
+  if (bytes < 1024 * 1024) {
+    return (bytes / 1024).toFixed(1) + " KB";
+  }
+
+  return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+}
+
+/* =========================================================
+   ÂM THANH
+========================================================= */
 function initAudio() {
   if (audioContext) {
     if (audioContext.state === "suspended") {
       audioContext.resume();
     }
+
     return;
   }
 
-  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  const AudioContextClass =
+    window.AudioContext || window.webkitAudioContext;
+
   if (!AudioContextClass) return;
 
   audioContext = new AudioContextClass();
+
   audioNode = audioContext.createScriptProcessor(1024, 0, 2);
 
   audioNode.onaudioprocess = function(event) {
-    const left = event.outputBuffer.getChannelData(0);
-    const right = event.outputBuffer.getChannelData(1);
+    const leftChannel = event.outputBuffer.getChannelData(0);
+    const rightChannel = event.outputBuffer.getChannelData(1);
 
-    for (let i = 0; i < left.length; i++) {
+    for (let i = 0; i < leftChannel.length; i++) {
       if (soundEnabled && audioQueue.length >= 2) {
-        left[i] = audioQueue.shift();
-        right[i] = audioQueue.shift();
+        leftChannel[i] = audioQueue.shift();
+        rightChannel[i] = audioQueue.shift();
       } else {
-        left[i] = 0;
-        right[i] = 0;
+        leftChannel[i] = 0;
+        rightChannel[i] = 0;
       }
     }
   };
@@ -406,122 +736,355 @@ function initAudio() {
   audioNode.connect(audioContext.destination);
 }
 
-// ====== Khởi tạo NES ======
+/* =========================================================
+   TẠO MÁY NES
+========================================================= */
 function createNES() {
   audioQueue = [];
 
   nes = new jsnes.NES({
     onFrame(framebuffer) {
-      for (let i = 0, p = 0; i < framebuffer.length; i++, p += 4) {
+      for (
+        let i = 0, pixelIndex = 0;
+        i < framebuffer.length;
+        i++, pixelIndex += 4
+      ) {
         const color = framebuffer[i];
-        pixels[p] = color & 0xFF;
-        pixels[p + 1] = (color >> 8) & 0xFF;
-        pixels[p + 2] = (color >> 16) & 0xFF;
-        pixels[p + 3] = 255;
+
+        pixels[pixelIndex] = color & 0xFF;
+        pixels[pixelIndex + 1] = (color >> 8) & 0xFF;
+        pixels[pixelIndex + 2] = (color >> 16) & 0xFF;
+        pixels[pixelIndex + 3] = 255;
       }
+
       ctx.putImageData(imageData, 0, 0);
     },
 
     onAudioSample(left, right) {
-      if (audioQueue.length < 18000) {
+      /*
+        Giới hạn hàng chờ để âm thanh không bị chậm.
+      */
+      if (audioQueue.length < 12000) {
         audioQueue.push(left, right);
       }
     }
   });
 }
 
-// ====== Chuyển ArrayBuffer thành chuỗi nhị phân ======
+/* =========================================================
+   XỬ LÝ DỮ LIỆU ROM
+========================================================= */
 function binaryStringFromArrayBuffer(buffer) {
   const bytes = new Uint8Array(buffer);
   const chunkSize = 8192;
   let result = "";
 
-  for (let i = 0; i < bytes.length; i += chunkSize) {
-    result += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
+  for (let start = 0; start < bytes.length; start += chunkSize) {
+    const chunk = bytes.subarray(start, start + chunkSize);
+
+    result += String.fromCharCode.apply(null, chunk);
   }
 
   return result;
 }
 
-// ====== Kiểm tra header NES ======
 function isValidNESRom(buffer) {
   const bytes = new Uint8Array(buffer);
-  return bytes.length >= 16 &&
-         bytes[0] === 0x4E &&
-         bytes[1] === 0x45 &&
-         bytes[2] === 0x53 &&
-         bytes[3] === 0x1A;
+
+  return (
+    bytes.length >= 16 &&
+    bytes[0] === 0x4E &&
+    bytes[1] === 0x45 &&
+    bytes[2] === 0x53 &&
+    bytes[3] === 0x1A
+  );
 }
 
-// ====== Tải ROM từ ArrayBuffer ======
-function loadROM(buffer) {
+function releaseAllButtons() {
+  if (nes) {
+    Object.keys(buttons).forEach(key => {
+      nes.buttonUp(1, buttons[key]);
+    });
+  }
+
+  document.querySelectorAll("[data-key]").forEach(button => {
+    button.classList.remove("pressed");
+  });
+}
+
+function loadROM(buffer, gameName) {
+  if (!isValidNESRom(buffer)) {
+    throw new Error(
+      "Dữ liệu này không phải ROM NES hợp lệ hoặc ROM đã bị lỗi."
+    );
+  }
+
+  releaseAllButtons();
+
+  gameLoaded = false;
+  paused = false;
+  audioQueue = [];
+
+  createNES();
+
+  const romData = binaryStringFromArrayBuffer(buffer);
+
+  nes.loadROM(romData);
+
+  gameLoaded = true;
+  paused = false;
+
+  pauseButton.textContent = "Tạm dừng";
+  gameTitle.textContent = gameName.toUpperCase();
+  status.textContent = "Đang chơi: " + gameName;
+
+  hideScreenMessage();
+}
+
+/* =========================================================
+   TẢI ROM TỪ GITHUB
+========================================================= */
+async function downloadROM(url) {
+  const response = await fetch(url, {
+    method:"GET",
+    cache:"force-cache"
+  });
+
+  if (!response.ok) {
+    throw new Error("Không thể tải ROM. Lỗi HTTP: " + response.status);
+  }
+
+  const buffer = await response.arrayBuffer();
+
+  if (!isValidNESRom(buffer)) {
+    throw new Error("Link không trả về file ROM NES hợp lệ.");
+  }
+
+  return buffer;
+}
+
+async function loadGameFromURL(url, gameName) {
+  const currentToken = ++loadToken;
+
   try {
-    if (!isValidNESRom(buffer)) {
-      throw new Error("File không phải ROM NES hợp lệ hoặc bị hỏng.");
-    }
+    releaseAllButtons();
 
-    createNES();
-    nes.loadROM(binaryStringFromArrayBuffer(buffer));
-
-    gameLoaded = true;
+    gameLoaded = false;
     paused = false;
+    audioQueue = [];
+
     pauseButton.textContent = "Tạm dừng";
-    status.textContent = "Game đã sẵn sàng";
-    screenMessage.style.display = "none";
-  } catch (error) {
-    console.error(error);
-    gameLoaded = false;
-    status.textContent = "Không thể tải game";
-    screenMessage.style.display = "flex";
-    screenMessage.innerHTML = "";
-    const strong = document.createElement("strong");
-    strong.textContent = "Không thể tải game";
-    const span = document.createElement("span");
-    span.textContent = error.message || "File không hợp lệ.";
-    screenMessage.appendChild(strong);
-    screenMessage.appendChild(span);
-  }
-}
+    gameTitle.textContent = gameName.toUpperCase();
 
-// ====== Tải game mặc định ======
-async function loadDefaultGame() {
-  try {
-    status.textContent = "Đang tải Super Mario Bros...";
-    screenMessage.style.display = "flex";
-    screenMessage.innerHTML = "";
-    const strong = document.createElement("strong");
-    strong.textContent = "Đang tải Super Mario Bros";
-    const span = document.createElement("span");
-    span.textContent = "Vui lòng chờ trong giây lát...";
-    screenMessage.appendChild(strong);
-    screenMessage.appendChild(span);
+    status.textContent = "Đang tải " + gameName + "...";
 
-    createNES();
+    showScreenMessage(
+      "Đang tải " + gameName,
+      "Đang lấy ROM từ GitHub..."
+    );
 
-    const response = await fetch(DEFAULT_ROM_URL);
+    const buffer = await downloadROM(url);
 
-    if (!response.ok) {
-      throw new Error("Không tải được file game. Mã lỗi: " + response.status);
+    if (currentToken !== loadToken) {
+      return;
     }
 
-    const buffer = await response.arrayBuffer();
-    loadROM(buffer);
+    status.textContent =
+      "Đang nạp " + gameName + " • " + formatBytes(buffer.byteLength);
+
+    loadROM(buffer, gameName);
   } catch (error) {
-    console.error(error);
+    if (currentToken !== loadToken) {
+      return;
+    }
+
+    console.error("Lỗi tải ROM:", error);
+
     gameLoaded = false;
-    status.textContent = "Không thể tải game";
-    screenMessage.style.display = "flex";
-    screenMessage.innerHTML = "";
-    const strong = document.createElement("strong");
-    strong.textContent = "Không thể tải game";
-    const span = document.createElement("span");
-    span.textContent = error.message || "Vui lòng kiểm tra lại đường link ROM và kết nối mạng.";
-    screenMessage.appendChild(strong);
-    screenMessage.appendChild(span);
+    paused = false;
+    audioQueue = [];
+
+    status.textContent = "Không thể tải " + gameName;
+
+    showScreenMessage(
+      "Không thể tải game",
+      error.message || "Vui lòng kiểm tra lại kết nối mạng."
+    );
   }
 }
 
-// ====== Vòng lặp game ======
+/* =========================================================
+   TẢI SẴN CONTRA NGAY KHI MỞ TRANG
+========================================================= */
+function preloadContra() {
+  if (contraROMBuffer) {
+    return Promise.resolve(contraROMBuffer);
+  }
+
+  if (contraPreloadPromise) {
+    return contraPreloadPromise;
+  }
+
+  contraStatus.textContent = "Đang tải sẵn game...";
+
+  contraPreloadPromise = downloadROM(CONTRA_ROM_URL)
+    .then(buffer => {
+      contraROMBuffer = buffer;
+      contraPreloadError = null;
+
+      contraStatus.textContent =
+        "Đã sẵn sàng • " + formatBytes(buffer.byteLength);
+
+      contraStatus.classList.add("game-ready");
+
+      return buffer;
+    })
+    .catch(error => {
+      console.error("Không thể tải sẵn Contra:", error);
+
+      contraPreloadError = error;
+      contraPreloadPromise = null;
+
+      contraStatus.textContent = "Chưa tải sẵn được — chạm để thử lại";
+      contraStatus.classList.remove("game-ready");
+
+      throw error;
+    });
+
+  return contraPreloadPromise;
+}
+
+/* =========================================================
+   MỞ CONTRA TỪ BỘ NHỚ TẢI SẴN
+========================================================= */
+async function loadContra() {
+  const currentToken = ++loadToken;
+
+  try {
+    releaseAllButtons();
+
+    gameLoaded = false;
+    paused = false;
+    audioQueue = [];
+
+    pauseButton.textContent = "Tạm dừng";
+    gameTitle.textContent = CONTRA_GAME_NAME.toUpperCase();
+
+    showScreenMessage(
+      "Đang mở Contra",
+      contraROMBuffer
+        ? "Đang nạp game đã tải sẵn..."
+        : "Contra đang được tải..."
+    );
+
+    status.textContent = contraROMBuffer
+      ? "Đang nạp Contra..."
+      : "Đang chờ tải Contra...";
+
+    /*
+      Nếu Contra đã tải sẵn, lệnh này nhận ngay ROM từ RAM.
+      Nếu vẫn đang tải, nó chỉ chờ tiến trình tải đó hoàn tất,
+      không tạo thêm một lượt tải mới.
+    */
+    const buffer = contraROMBuffer || await preloadContra();
+
+    if (currentToken !== loadToken) {
+      return;
+    }
+
+    status.textContent =
+      "Đang nạp Contra • " + formatBytes(buffer.byteLength);
+
+    loadROM(buffer, CONTRA_GAME_NAME);
+  } catch (error) {
+    if (currentToken !== loadToken) {
+      return;
+    }
+
+    console.error("Lỗi mở Contra:", error);
+
+    gameLoaded = false;
+    paused = false;
+    audioQueue = [];
+
+    status.textContent = "Không thể tải Contra";
+
+    showScreenMessage(
+      "Không thể tải Contra",
+      error.message || "Hãy kiểm tra mạng rồi thử lại."
+    );
+  }
+}
+
+/* =========================================================
+   MỞ FILE NES TỪ MÁY
+========================================================= */
+function loadLocalROM(file) {
+  const currentToken = ++loadToken;
+
+  releaseAllButtons();
+
+  gameLoaded = false;
+  paused = false;
+  audioQueue = [];
+
+  const gameName = file.name.replace(/\.nes$/i, "");
+
+  gameTitle.textContent = gameName.toUpperCase();
+  status.textContent = "Đang đọc: " + file.name;
+
+  showScreenMessage(
+    "Đang mở game",
+    "Đang đọc ROM từ thiết bị..."
+  );
+
+  const reader = new FileReader();
+
+  reader.onload = function(event) {
+    if (currentToken !== loadToken) {
+      return;
+    }
+
+    try {
+      const buffer = event.target.result;
+
+      status.textContent =
+        "Đang nạp " + gameName + " • " + formatBytes(buffer.byteLength);
+
+      loadROM(buffer, gameName);
+    } catch (error) {
+      console.error("Lỗi ROM từ máy:", error);
+
+      gameLoaded = false;
+      status.textContent = "Không thể mở file";
+
+      showScreenMessage(
+        "Không thể mở game",
+        error.message || "File .nes này không thể nạp."
+      );
+    }
+  };
+
+  reader.onerror = function() {
+    if (currentToken !== loadToken) {
+      return;
+    }
+
+    gameLoaded = false;
+    status.textContent = "Không thể đọc file";
+
+    showScreenMessage(
+      "Không thể đọc file",
+      "Hãy thử lại bằng một file .nes khác."
+    );
+  };
+
+  reader.readAsArrayBuffer(file);
+}
+
+/* =========================================================
+   VÒNG LẶP GAME
+========================================================= */
 function gameLoop() {
   if (gameLoaded && !paused && nes) {
     nes.frame();
@@ -530,9 +1093,17 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
-// ====== Điều khiển nút ======
+/* =========================================================
+   BẤM PHÍM NES
+========================================================= */
 function setButton(key, isDown) {
-  if (!gameLoaded || !nes || !Object.prototype.hasOwnProperty.call(buttons, key)) return;
+  if (
+    !gameLoaded ||
+    !nes ||
+    !Object.prototype.hasOwnProperty.call(buttons, key)
+  ) {
+    return;
+  }
 
   initAudio();
 
@@ -543,25 +1114,19 @@ function setButton(key, isDown) {
   }
 }
 
-function releaseAllButtons() {
-  if (!nes) return;
-
-  Object.keys(buttons).forEach(key => {
-    nes.buttonUp(1, buttons[key]);
-  });
-
-  document.querySelectorAll("[data-key]").forEach(button => {
-    button.classList.remove("pressed");
-  });
-}
-
-// ====== Nút tạm dừng ======
+/* =========================================================
+   NÚT TẠM DỪNG / ÂM THANH
+========================================================= */
 pauseButton.addEventListener("click", function() {
   if (!gameLoaded) return;
 
   paused = !paused;
+
   pauseButton.textContent = paused ? "Tiếp tục" : "Tạm dừng";
-  status.textContent = paused ? "Game đang tạm dừng" : "Đang chơi";
+
+  status.textContent = paused
+    ? "Game đang tạm dừng"
+    : "Đang chơi";
 
   if (paused) {
     audioQueue = [];
@@ -570,10 +1135,11 @@ pauseButton.addEventListener("click", function() {
   releaseAllButtons();
 });
 
-// ====== Nút âm thanh ======
 soundButton.addEventListener("click", function() {
   soundEnabled = !soundEnabled;
-  soundButton.textContent = "Âm thanh: " + (soundEnabled ? "Bật" : "Tắt");
+
+  soundButton.textContent =
+    "Âm thanh: " + (soundEnabled ? "Bật" : "Tắt");
 
   if (soundEnabled) {
     initAudio();
@@ -582,115 +1148,175 @@ soundButton.addEventListener("click", function() {
   }
 });
 
-// ====== Nút mở file ======
+/* =========================================================
+   MENU GAME KHÁC
+========================================================= */
+gameButton.addEventListener("click", function() {
+  releaseAllButtons();
+  gameModal.classList.add("show");
+});
+
+closeGameModal.addEventListener("click", function() {
+  gameModal.classList.remove("show");
+});
+
+gameModal.addEventListener("click", function(event) {
+  if (event.target === gameModal) {
+    gameModal.classList.remove("show");
+  }
+});
+
 openFileButton.addEventListener("click", function() {
+  gameModal.classList.remove("show");
   fileInput.click();
+});
+
+contraButton.addEventListener("click", function() {
+  gameModal.classList.remove("show");
+  loadContra();
 });
 
 fileInput.addEventListener("change", function(event) {
   const file = event.target.files[0];
+
   if (!file) return;
 
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const buffer = e.target.result;
-    loadROM(buffer);
-  };
-  reader.onerror = function() {
-    alert("Không thể đọc file.");
-  };
-  reader.readAsArrayBuffer(file);
+  loadLocalROM(file);
   fileInput.value = "";
 });
 
-// ====== GÂN SỰ KIỆN TOUCH CHO CÁC NÚT ĐIỀU KHIỂN ======
+/* =========================================================
+   ĐIỀU KHIỂN CẢM ỨNG
+========================================================= */
 document.querySelectorAll("[data-key]").forEach(button => {
   const key = button.dataset.key;
-  const activeTouches = new Set();
+  const activePointers = new Set();
 
   function press(event) {
     event.preventDefault();
-    
-    if (event.changedTouches.length === 0) return;
-    
-    const touch = event.changedTouches[0];
-    
-    if (activeTouches.has(touch.identifier)) return;
-    
-    activeTouches.add(touch.identifier);
+
+    if (activePointers.has(event.pointerId)) {
+      return;
+    }
+
+    activePointers.add(event.pointerId);
+
+    try {
+      button.setPointerCapture(event.pointerId);
+    } catch (error) {}
+
     button.classList.add("pressed");
     setButton(key, true);
   }
 
   function release(event) {
     event.preventDefault();
-    
-    if (event.changedTouches.length === 0) return;
-    
-    for (let i = 0; i < event.changedTouches.length; i++) {
-      const touchId = event.changedTouches[i].identifier;
-      
-      if (activeTouches.has(touchId)) {
-        activeTouches.delete(touchId);
-        
-        if (activeTouches.size === 0) {
-          button.classList.remove("pressed");
-          setButton(key, false);
-        }
-        break;
-      }
+
+    if (!activePointers.has(event.pointerId)) {
+      return;
+    }
+
+    activePointers.delete(event.pointerId);
+
+    if (activePointers.size === 0) {
+      button.classList.remove("pressed");
+      setButton(key, false);
     }
   }
 
-  button.addEventListener('touchstart', press, { passive: false });
-  button.addEventListener('touchend', release, { passive: false });
-  button.addEventListener('touchcancel', release, { passive: false });
+  button.addEventListener("pointerdown", press);
+  button.addEventListener("pointerup", release);
+  button.addEventListener("pointercancel", release);
+  button.addEventListener("lostpointercapture", release);
+
+  button.addEventListener("contextmenu", function(event) {
+    event.preventDefault();
+  });
 });
 
-// ====== Bàn phím (hỗ trợ desktop) ======
+/* =========================================================
+   BÀN PHÍM MÁY TÍNH
+========================================================= */
 const keyboardMap = {
-  ArrowUp: "UP",
-  ArrowDown: "DOWN",
-  ArrowLeft: "LEFT",
-  ArrowRight: "RIGHT",
-  z: "A",
-  Z: "A",
-  x: "B",
-  X: "B",
-  Enter: "START",
-  Shift: "SELECT"
+  ArrowUp:"UP",
+  ArrowDown:"DOWN",
+  ArrowLeft:"LEFT",
+  ArrowRight:"RIGHT",
+  z:"A",
+  Z:"A",
+  x:"B",
+  X:"B",
+  Enter:"START",
+  Shift:"SELECT"
 };
 
-window.addEventListener("keydown", event => {
+window.addEventListener("keydown", function(event) {
   const key = keyboardMap[event.key];
 
-  if (!key || event.repeat) return;
+  if (!key || event.repeat) {
+    return;
+  }
 
   event.preventDefault();
+
   setButton(key, true);
 
-  const element = document.querySelector('[data-key="' + key + '"]');
-  if (element) element.classList.add("pressed");
+  const button = document.querySelector(
+    '[data-key="' + key + '"]'
+  );
+
+  if (button) {
+    button.classList.add("pressed");
+  }
 });
 
-window.addEventListener("keyup", event => {
+window.addEventListener("keyup", function(event) {
   const key = keyboardMap[event.key];
 
-  if (!key) return;
+  if (!key) {
+    return;
+  }
 
   event.preventDefault();
+
   setButton(key, false);
 
-  const element = document.querySelector('[data-key="' + key + '"]');
-  if (element) element.classList.remove("pressed");
+  const button = document.querySelector(
+    '[data-key="' + key + '"]'
+  );
+
+  if (button) {
+    button.classList.remove("pressed");
+  }
 });
 
-// ====== Xử lý mất focus ======
-window.addEventListener("blur", releaseAllButtons);
+/* =========================================================
+   TRÁNH KẸT NÚT / ZOOM TRÊN ĐIỆN THOẠI
+========================================================= */
+document.addEventListener("gesturestart", event => {
+  event.preventDefault();
+}, { passive:false });
+
+document.addEventListener("gesturechange", event => {
+  event.preventDefault();
+}, { passive:false });
+
+document.addEventListener("gestureend", event => {
+  event.preventDefault();
+}, { passive:false });
+
+document.addEventListener("dblclick", event => {
+  event.preventDefault();
+}, { passive:false });
+
+window.addEventListener("blur", function() {
+  releaseAllButtons();
+});
 
 document.addEventListener("visibilitychange", function() {
   if (document.hidden) {
     releaseAllButtons();
+
     if (gameLoaded && !paused) {
       paused = true;
       pauseButton.textContent = "Tiếp tục";
@@ -700,9 +1326,23 @@ document.addEventListener("visibilitychange", function() {
   }
 });
 
-// ====== Khởi động ======
+/* =========================================================
+   KHỞI ĐỘNG
+========================================================= */
 gameLoop();
-loadDefaultGame();
+
+/*
+  Mario được mở ngay từ đầu.
+  Contra tải song song vào bộ nhớ nhưng không làm đổi trạng thái màn hình.
+*/
+loadGameFromURL(DEFAULT_ROM_URL, DEFAULT_GAME_NAME);
+
+preloadContra().catch(() => {
+  /*
+    Lỗi tải sẵn chỉ hiển thị nhỏ trong menu Contra,
+    không ảnh hưởng tới Mario đang chạy.
+  */
+});
 </script>
 </body>
 </html>
