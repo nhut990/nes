@@ -414,6 +414,20 @@
       font-size:23px;
     }
 
+    /* Ảnh xem trước game */
+    .game-cover{
+      display:block;
+      width:43px;
+      height:43px;
+      flex:none;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:11px;
+      background:#0b1222;
+      object-fit:cover;
+      box-shadow:0 2px 7px rgba(0,0,0,.3);
+    }
+
     .game-info{
       min-width:0;
     }
@@ -560,7 +574,11 @@
         </button>
 
         <button class="game-item" id="adventureButton">
-          <span class="game-icon">🏝️</span>
+          <img
+            class="game-cover"
+            src="https://raw.githubusercontent.com/nhut990/files/refs/heads/main/hinh/Adventure%20Island.jpg"
+            alt="Adventure Island"
+          >
           <span class="game-info">
             <strong>Adventure Island</strong>
             <small id="adventureStatus">Đang tải sẵn game...</small>
@@ -568,7 +586,11 @@
         </button>
 
         <button class="game-item" id="contra2Button">
-          <span class="game-icon">🔥</span>
+          <img
+            class="game-cover"
+            src="https://raw.githubusercontent.com/nhut990/files/refs/heads/main/hinh/Contra2.jpg"
+            alt="Contra 2"
+          >
           <span class="game-info">
             <strong>Contra 2</strong>
             <small id="contra2Status">Đang tải sẵn game...</small>
@@ -576,7 +598,11 @@
         </button>
 
         <button class="game-item" id="chessButton">
-          <span class="game-icon">♟️</span>
+          <img
+            class="game-cover"
+            src="https://raw.githubusercontent.com/nhut990/files/refs/heads/main/hinh/Chinese%20Chess.jpg"
+            alt="Chinese Chess"
+          >
           <span class="game-info">
             <strong>Zhong Guo Xiang Qi (Chinese Chess)</strong>
             <small id="chessStatus">Đang tải sẵn game...</small>
