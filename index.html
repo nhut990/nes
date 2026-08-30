@@ -574,6 +574,24 @@
             <small id="adventureStatus">Đang tải sẵn game...</small>
           </span>
         </button>
+
+        <!-- Game mới 1: Contra 2 -->
+        <button class="game-item" id="contra2Button">
+          <span class="game-icon">🔥</span>
+          <span class="game-info">
+            <strong>Contra 2</strong>
+            <small id="contra2Status">Đang tải sẵn game...</small>
+          </span>
+        </button>
+
+        <!-- Game mới 2: Zhong Guo Xiang Qi (Chinese Chess) -->
+        <button class="game-item" id="chessButton">
+          <span class="game-icon">♟️</span>
+          <span class="game-info">
+            <strong>Zhong Guo Xiang Qi (Chinese Chess)</strong>
+            <small id="chessStatus">Đang tải sẵn game...</small>
+          </span>
+        </button>
       </div>
     </div>
   </div>
@@ -591,9 +609,18 @@
     const ADVENTURE_ROM_URL =
       "https://raw.githubusercontent.com/nhut990/files/main/music/Adventure%20Island%20(USA).nes";
 
+    // --- Link ROM cho 2 game mới (đã sửa sang raw đúng) ---
+    const CONTRA2_ROM_URL =
+      "https://raw.githubusercontent.com/nhut990/files/main/music/Contra%202.nes";
+
+    const CHESS_ROM_URL =
+      "https://raw.githubusercontent.com/nhut990/files/main/music/Zhong%20Guo%20Xiang%20Qi%20(Chinese%20Chess).nes";
+
     const DEFAULT_GAME_NAME = "Super Mario Bros";
     const CONTRA_GAME_NAME = "Contra";
     const ADVENTURE_GAME_NAME = "Adventure Island";
+    const CONTRA2_GAME_NAME = "Contra 2";
+    const CHESS_GAME_NAME = "Zhong Guo Xiang Qi";
 
     /* =========================================================
        GIAO DIỆN
@@ -623,6 +650,13 @@
     const adventureButton = document.getElementById("adventureButton");
     const adventureStatus = document.getElementById("adventureStatus");
 
+    // Các element cho game mới
+    const contra2Button = document.getElementById("contra2Button");
+    const contra2Status = document.getElementById("contra2Status");
+
+    const chessButton = document.getElementById("chessButton");
+    const chessStatus = document.getElementById("chessStatus");
+
     /* =========================================================
        TRẠNG THÁI
     ========================================================= */
@@ -640,6 +674,13 @@
 
     let adventureROMBuffer = null;
     let adventurePreloadPromise = null;
+
+    // Buffer và Promise cho game mới
+    let contra2ROMBuffer = null;
+    let contra2PreloadPromise = null;
+
+    let chessROMBuffer = null;
+    let chessPreloadPromise = null;
 
     /*
       Mỗi lần chọn game mới, token tăng.
@@ -1059,6 +1100,172 @@
     }
 
     /* =========================================================
+       TẢI SẴN CONTRA 2 (GAME MỚI)
+    ========================================================= */
+    function preloadContra2() {
+      if (contra2ROMBuffer) {
+        return Promise.resolve(contra2ROMBuffer);
+      }
+
+      if (contra2PreloadPromise) {
+        return contra2PreloadPromise;
+      }
+
+      contra2Status.textContent = "Đang tải sẵn game...";
+      contra2Status.classList.remove("game-ready");
+
+      contra2PreloadPromise = downloadROM(CONTRA2_ROM_URL)
+        .then(buffer => {
+          contra2ROMBuffer = buffer;
+          contra2Status.textContent = "Đã sẵn sàng";
+          contra2Status.classList.add("game-ready");
+
+          return buffer;
+        })
+        .catch(error => {
+          console.error("Không thể tải sẵn Contra 2:", error);
+
+          contra2PreloadPromise = null;
+          contra2Status.textContent = "Chưa tải được — chạm để thử lại";
+          contra2Status.classList.remove("game-ready");
+
+          throw error;
+        });
+
+      return contra2PreloadPromise;
+    }
+
+    async function loadContra2() {
+      const currentToken = ++loadToken;
+
+      try {
+        releaseAllButtons();
+
+        gameLoaded = false;
+        paused = false;
+        audioQueue = [];
+
+        pauseButton.textContent = "Tạm dừng";
+        gameTitle.textContent = CONTRA2_GAME_NAME.toUpperCase();
+
+        showScreenMessage(
+          "Đang mở Contra 2",
+          contra2ROMBuffer
+            ? "Đang nạp game đã tải sẵn..."
+            : "Contra 2 đang được tải..."
+        );
+
+        status.textContent = contra2ROMBuffer
+          ? "Đang nạp Contra 2..."
+          : "Đang chờ tải Contra 2...";
+
+        const buffer = contra2ROMBuffer || await preloadContra2();
+
+        if (currentToken !== loadToken) return;
+
+        loadROM(buffer, CONTRA2_GAME_NAME);
+      } catch (error) {
+        if (currentToken !== loadToken) return;
+
+        console.error("Lỗi mở Contra 2:", error);
+
+        gameLoaded = false;
+        paused = false;
+        audioQueue = [];
+
+        status.textContent = "Không thể tải Contra 2";
+
+        showScreenMessage(
+          "Không thể tải Contra 2",
+          error.message || "Hãy kiểm tra mạng rồi thử lại."
+        );
+      }
+    }
+
+    /* =========================================================
+       TẢI SẴN ZHONG GUO XIANG QI (GAME MỚI)
+    ========================================================= */
+    function preloadChess() {
+      if (chessROMBuffer) {
+        return Promise.resolve(chessROMBuffer);
+      }
+
+      if (chessPreloadPromise) {
+        return chessPreloadPromise;
+      }
+
+      chessStatus.textContent = "Đang tải sẵn game...";
+      chessStatus.classList.remove("game-ready");
+
+      chessPreloadPromise = downloadROM(CHESS_ROM_URL)
+        .then(buffer => {
+          chessROMBuffer = buffer;
+          chessStatus.textContent = "Đã sẵn sàng";
+          chessStatus.classList.add("game-ready");
+
+          return buffer;
+        })
+        .catch(error => {
+          console.error("Không thể tải sẵn Zhong Guo Xiang Qi:", error);
+
+          chessPreloadPromise = null;
+          chessStatus.textContent = "Chưa tải được — chạm để thử lại";
+          chessStatus.classList.remove("game-ready");
+
+          throw error;
+        });
+
+      return chessPreloadPromise;
+    }
+
+    async function loadChess() {
+      const currentToken = ++loadToken;
+
+      try {
+        releaseAllButtons();
+
+        gameLoaded = false;
+        paused = false;
+        audioQueue = [];
+
+        pauseButton.textContent = "Tạm dừng";
+        gameTitle.textContent = CHESS_GAME_NAME.toUpperCase();
+
+        showScreenMessage(
+          "Đang mở Zhong Guo Xiang Qi",
+          chessROMBuffer
+            ? "Đang nạp game đã tải sẵn..."
+            : "Zhong Guo Xiang Qi đang được tải..."
+        );
+
+        status.textContent = chessROMBuffer
+          ? "Đang nạp Zhong Guo Xiang Qi..."
+          : "Đang chờ tải Zhong Guo Xiang Qi...";
+
+        const buffer = chessROMBuffer || await preloadChess();
+
+        if (currentToken !== loadToken) return;
+
+        loadROM(buffer, CHESS_GAME_NAME);
+      } catch (error) {
+        if (currentToken !== loadToken) return;
+
+        console.error("Lỗi mở Zhong Guo Xiang Qi:", error);
+
+        gameLoaded = false;
+        paused = false;
+        audioQueue = [];
+
+        status.textContent = "Không thể tải Zhong Guo Xiang Qi";
+
+        showScreenMessage(
+          "Không thể tải Zhong Guo Xiang Qi",
+          error.message || "Hãy kiểm tra mạng rồi thử lại."
+        );
+      }
+    }
+
+    /* =========================================================
        MỞ FILE ROM TỪ MÁY
     ========================================================= */
     function loadLocalROM(file) {
@@ -1214,6 +1421,17 @@
       loadAdventure();
     });
 
+    // Sự kiện cho game mới
+    contra2Button.addEventListener("click", function() {
+      gameModal.classList.remove("show");
+      loadContra2();
+    });
+
+    chessButton.addEventListener("click", function() {
+      gameModal.classList.remove("show");
+      loadChess();
+    });
+
     fileInput.addEventListener("change", function(event) {
       const file = event.target.files[0];
 
@@ -1363,13 +1581,14 @@
 
     /*
       Mario mở ngay khi vào trang.
-      Contra và Adventure Island tải nền, không làm ảnh hưởng Mario.
+      Contra, Adventure Island, và 2 game mới tải nền, không làm ảnh hưởng Mario.
     */
     loadGameFromURL(DEFAULT_ROM_URL, DEFAULT_GAME_NAME);
 
     preloadContra().catch(() => {});
-
     preloadAdventure().catch(() => {});
+    preloadContra2().catch(() => {});
+    preloadChess().catch(() => {});
   </script>
 </body>
 </html>
