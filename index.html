@@ -862,9 +862,10 @@
 
     function releaseAll(){
       if(nes) Object.values(keys).forEach(k=>nes.buttonUp(1,k));
-      document.querySelectorAll("[data-key]").forEach(b=>b.classList.remove("pressed"));
-      // Đặt cờ pressed của mỗi nút về false nếu có
-      document.querySelectorAll("[data-key]").forEach(b=>{ b._pressed = false; });
+      document.querySelectorAll("[data-key]").forEach(b=>{
+        b.classList.remove("pressed");
+        b._pressed = false;
+      });
     }
 
     async function download(url){
@@ -983,8 +984,8 @@
       button.addEventListener("pointerdown", down);
       button.addEventListener("pointerup", up);
       button.addEventListener("pointercancel", up);
-      // Vẫn lắng nghe lostpointercapture để dọn dẹp, nhưng đã có cờ chặn double
-      button.addEventListener("lostpointercapture", up);
+      // Bỏ lắng nghe lostpointercapture để tránh nhả phím sớm
+      // button.addEventListener("lostpointercapture", up);
     });
 
     const keyboard={
