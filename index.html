@@ -182,9 +182,6 @@
       padding:4px 2px 0;
     }
 
-    /* ==================================================
-       D-PAD — ĐÃ THU NHỎ Ở CHẾ ĐỘ ĐỨNG
-    ================================================== */
     .dpad{
       position:relative;
       width:clamp(135px,29vw,150px);
@@ -276,9 +273,6 @@
       fill:#bcd9ff;
     }
 
-    /* ==================================================
-       NÚT A / B — ĐÃ THU NHỎ Ở CHẾ ĐỘ ĐỨNG
-    ================================================== */
     .right-controls{
       display:flex;
       align-items:center;
@@ -347,8 +341,6 @@
       font-size:18px;
     }
 
-    /* ================= MENU GAME ================= */
-
     .game-modal{
       position:fixed;
       z-index:100;
@@ -361,7 +353,9 @@
       backdrop-filter:blur(7px);
     }
 
-    .game-modal.show{display:flex}
+    .game-modal.show{
+      display:flex;
+    }
 
     .game-modal-card{
       width:min(100%,455px);
@@ -451,7 +445,9 @@
       background:#0b1222;
     }
 
-    .game-info{min-width:0}
+    .game-info{
+      min-width:0;
+    }
 
     .game-info strong,
     .game-info small{
@@ -475,14 +471,15 @@
       color:#8ff3b7!important;
     }
 
-    /* Màn hình dọc thấp: nhỏ thêm nhẹ */
     @media(max-height:640px) and (orientation:portrait){
       .app{
         gap:6px;
         padding:8px 10px 12px;
       }
 
-      .screen-box{max-height:38vh}
+      .screen-box{
+        max-height:38vh;
+      }
 
       .dpad{
         width:clamp(122px,27vw,138px);
@@ -499,9 +496,6 @@
       }
     }
 
-    /* ==================================================
-       XOAY NGANG — GIỮ NGUYÊN TỶ LỆ BẢN ĐÃ ỔN
-    ================================================== */
     @media (orientation:landscape) and (max-height:600px){
       .app{
         width:100%;
@@ -520,7 +514,8 @@
         row-gap:5px;
       }
 
-      .header,.top-actions{
+      .header,
+      .top-actions{
         display:none;
       }
 
@@ -625,8 +620,13 @@
         height:clamp(49px,10vw,65px);
       }
 
-      .round.b{margin-top:18px}
-      .middle{min-height:26px}
+      .round.b{
+        margin-top:18px;
+      }
+
+      .middle{
+        min-height:26px;
+      }
     }
   </style>
 </head>
@@ -643,6 +643,7 @@
 
     <div class="screen-box">
       <canvas id="screen" width="256" height="240"></canvas>
+
       <div class="screen-message" id="screenMessage">
         <strong>Đang tải Super Mario Bros</strong>
         <span>Vui lòng chờ trong giây lát...</span>
@@ -658,19 +659,27 @@
     <div class="controls">
       <div class="dpad">
         <button class="control up" data-key="UP" aria-label="Lên">
-          <svg class="dpad-arrow" viewBox="0 0 24 24"><path d="M12 4L4.5 12H9v8h6v-8h4.5L12 4z"/></svg>
+          <svg class="dpad-arrow" viewBox="0 0 24 24">
+            <path d="M12 4L4.5 12H9v8h6v-8h4.5L12 4z"/>
+          </svg>
         </button>
 
         <button class="control down" data-key="DOWN" aria-label="Xuống">
-          <svg class="dpad-arrow" viewBox="0 0 24 24"><path d="M12 20l7.5-8H15V4H9v8H4.5l7.5 8z"/></svg>
+          <svg class="dpad-arrow" viewBox="0 0 24 24">
+            <path d="M12 20l7.5-8H15V4H9v8H4.5l7.5 8z"/>
+          </svg>
         </button>
 
         <button class="control left" data-key="LEFT" aria-label="Trái">
-          <svg class="dpad-arrow" viewBox="0 0 24 24"><path d="M4 12l8-7.5V9h8v6h-8v4.5L4 12z"/></svg>
+          <svg class="dpad-arrow" viewBox="0 0 24 24">
+            <path d="M4 12l8-7.5V9h8v6h-8v4.5L4 12z"/>
+          </svg>
         </button>
 
         <button class="control right" data-key="RIGHT" aria-label="Phải">
-          <svg class="dpad-arrow" viewBox="0 0 24 24"><path d="M20 12l-8 7.5V15H4V9h8V4.5l8 7.5z"/></svg>
+          <svg class="dpad-arrow" viewBox="0 0 24 24">
+            <path d="M20 12l-8 7.5V15H4V9h8V4.5l8 7.5z"/>
+          </svg>
         </button>
 
         <div class="dpad-center"></div>
@@ -688,7 +697,9 @@
     </div>
   </div>
 
-  <button id="landscapeMenuButton" class="landscape-menu-button" aria-label="Mở menu game">☰</button>
+  <button id="landscapeMenuButton" class="landscape-menu-button" aria-label="Mở menu game">
+    ☰
+  </button>
 
   <input type="file" id="fileInput" accept=".nes" hidden>
 
@@ -699,6 +710,7 @@
           <strong>GAME KHÁC</strong>
           <span>Mở ROM từ máy hoặc chọn game có sẵn</span>
         </div>
+
         <button id="closeGameModal" class="close-game-modal">✕</button>
       </div>
 
@@ -712,7 +724,10 @@
         </button>
 
         <button class="game-item" id="adventureButton">
-          <img class="game-cover" src="https://raw.githubusercontent.com/nhut990/files/refs/heads/main/hinh/Adventure%20Island.jpg" alt="Adventure Island">
+          <img class="game-cover"
+            src="https://raw.githubusercontent.com/nhut990/files/refs/heads/main/hinh/Adventure%20Island.jpg"
+            alt="Adventure Island">
+
           <span class="game-info">
             <strong>Adventure Island</strong>
             <small id="adventureStatus">Đang tải sẵn game...</small>
@@ -720,7 +735,10 @@
         </button>
 
         <button class="game-item" id="contra2Button">
-          <img class="game-cover" src="https://raw.githubusercontent.com/nhut990/files/refs/heads/main/hinh/Contra2.jpg" alt="Contra 2">
+          <img class="game-cover"
+            src="https://raw.githubusercontent.com/nhut990/files/refs/heads/main/hinh/Contra2.jpg"
+            alt="Contra 2">
+
           <span class="game-info">
             <strong>Contra 2</strong>
             <small id="contra2Status">Đang tải sẵn game...</small>
@@ -728,7 +746,10 @@
         </button>
 
         <button class="game-item" id="chessButton">
-          <img class="game-cover" src="https://raw.githubusercontent.com/nhut990/files/refs/heads/main/hinh/Chinese%20Chess.jpg" alt="Chinese Chess">
+          <img class="game-cover"
+            src="https://raw.githubusercontent.com/nhut990/files/refs/heads/main/hinh/Chinese%20Chess.jpg"
+            alt="Chinese Chess">
+
           <span class="game-info">
             <strong>Zhong Guo Xiang Qi</strong>
             <small id="chessStatus">Đang tải sẵn game...</small>
@@ -759,8 +780,8 @@
     };
 
     const canvas = document.getElementById("screen");
-    const ctx = canvas.getContext("2d",{alpha:false});
-    const imageData = ctx.createImageData(256,240);
+    const ctx = canvas.getContext("2d", {alpha:false});
+    const imageData = ctx.createImageData(256, 240);
     const pixels = imageData.data;
 
     const status = document.getElementById("status");
@@ -777,64 +798,83 @@
       chess: document.getElementById("chessStatus")
     };
 
-    let nes, loaded = false, paused = false, soundOn = true;
-    let audioContext, audioNode, audioQueue = [];
-    let token = 0;
-    const cache = {};
-
     const keys = {
-      UP:jsnes.Controller.BUTTON_UP,
-      DOWN:jsnes.Controller.BUTTON_DOWN,
-      LEFT:jsnes.Controller.BUTTON_LEFT,
-      RIGHT:jsnes.Controller.BUTTON_RIGHT,
-      A:jsnes.Controller.BUTTON_A,
-      B:jsnes.Controller.BUTTON_B,
-      SELECT:jsnes.Controller.BUTTON_SELECT,
-      START:jsnes.Controller.BUTTON_START
+      UP: jsnes.Controller.BUTTON_UP,
+      DOWN: jsnes.Controller.BUTTON_DOWN,
+      LEFT: jsnes.Controller.BUTTON_LEFT,
+      RIGHT: jsnes.Controller.BUTTON_RIGHT,
+      A: jsnes.Controller.BUTTON_A,
+      B: jsnes.Controller.BUTTON_B,
+      SELECT: jsnes.Controller.BUTTON_SELECT,
+      START: jsnes.Controller.BUTTON_START
     };
 
-    function showMessage(title,text){
-      screenMessage.style.display="flex";
-      screenMessage.innerHTML=`<strong>${title}</strong><span>${text}</span>`;
+    const controlButtons = [...document.querySelectorAll("[data-key]")];
+
+    let nes;
+    let loaded = false;
+    let paused = false;
+    let soundOn = true;
+    let audioContext;
+    let audioNode;
+    let audioQueue = [];
+    let token = 0;
+
+    const cache = {};
+
+    function showMessage(title, text){
+      screenMessage.style.display = "flex";
+      screenMessage.innerHTML = `<strong>${title}</strong><span>${text}</span>`;
     }
 
     function hideMessage(){
-      screenMessage.style.display="none";
+      screenMessage.style.display = "none";
     }
 
     function validRom(buffer){
-      const b=new Uint8Array(buffer);
-      return b.length>=16&&b[0]===78&&b[1]===69&&b[2]===83&&b[3]===26;
+      const b = new Uint8Array(buffer);
+
+      return (
+        b.length >= 16 &&
+        b[0] === 78 &&
+        b[1] === 69 &&
+        b[2] === 83 &&
+        b[3] === 26
+      );
     }
 
     function toBinary(buffer){
-      const bytes=new Uint8Array(buffer);
-      let result="";
-      for(let i=0;i<bytes.length;i+=8192){
-        result+=String.fromCharCode(...bytes.subarray(i,i+8192));
+      const bytes = new Uint8Array(buffer);
+      let result = "";
+
+      for(let i = 0; i < bytes.length; i += 8192){
+        result += String.fromCharCode(...bytes.subarray(i, i + 8192));
       }
+
       return result;
     }
 
     function initAudio(){
       if(audioContext){
-        if(audioContext.state==="suspended") audioContext.resume();
+        if(audioContext.state === "suspended"){
+          audioContext.resume();
+        }
         return;
       }
 
-      const AudioCtx=window.AudioContext||window.webkitAudioContext;
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if(!AudioCtx) return;
 
-      audioContext=new AudioCtx();
-      audioNode=audioContext.createScriptProcessor(1024,0,2);
+      audioContext = new AudioCtx();
+      audioNode = audioContext.createScriptProcessor(1024, 0, 2);
 
-      audioNode.onaudioprocess=e=>{
-        const l=e.outputBuffer.getChannelData(0);
-        const r=e.outputBuffer.getChannelData(1);
+      audioNode.onaudioprocess = e => {
+        const left = e.outputBuffer.getChannelData(0);
+        const right = e.outputBuffer.getChannelData(1);
 
-        for(let i=0;i<l.length;i++){
-          l[i]=soundOn&&audioQueue.length>=2?audioQueue.shift():0;
-          r[i]=soundOn&&audioQueue.length>=1?audioQueue.shift():0;
+        for(let i = 0; i < left.length; i++){
+          left[i] = soundOn && audioQueue.length >= 2 ? audioQueue.shift() : 0;
+          right[i] = soundOn && audioQueue.length >= 1 ? audioQueue.shift() : 0;
         }
       };
 
@@ -842,187 +882,318 @@
     }
 
     function createNes(){
-      audioQueue=[];
-      nes=new jsnes.NES({
+      audioQueue = [];
+
+      nes = new jsnes.NES({
         onFrame(frame){
-          for(let i=0,p=0;i<frame.length;i++,p+=4){
-            const c=frame[i];
-            pixels[p]=c&255;
-            pixels[p+1]=(c>>8)&255;
-            pixels[p+2]=(c>>16)&255;
-            pixels[p+3]=255;
+          for(let i = 0, p = 0; i < frame.length; i++, p += 4){
+            const color = frame[i];
+
+            pixels[p] = color & 255;
+            pixels[p + 1] = (color >> 8) & 255;
+            pixels[p + 2] = (color >> 16) & 255;
+            pixels[p + 3] = 255;
           }
-          ctx.putImageData(imageData,0,0);
+
+          ctx.putImageData(imageData, 0, 0);
         },
-        onAudioSample(left,right){
-          if(soundOn && audioQueue.length<12000) audioQueue.push(left,right);
+
+        onAudioSample(left, right){
+          if(soundOn && audioQueue.length < 12000){
+            audioQueue.push(left, right);
+          }
+        }
+      });
+    }
+
+    function pressKey(key, down){
+      if(!loaded || !nes || !(key in keys)) return;
+
+      if(down){
+        initAudio();
+        nes.buttonDown(1, keys[key]);
+      }else{
+        nes.buttonUp(1, keys[key]);
+      }
+    }
+
+    /*
+      Safari iOS có thể gửi pointerdown + pointerup nhanh hơn một lần
+      requestAnimationFrame. Nếu nhả ngay, NES chưa chạy frame nào khi nút
+      đang ở trạng thái DOWN, dẫn đến game bỏ qua cú bấm.
+
+      Vì vậy: khi thả tay, chỉ đánh dấu "chờ nhả".
+      Sau NES frame kế tiếp, loop() mới buttonUp().
+    */
+    function releaseAfterNesFrame(button){
+      if(button._pointers.size !== 0) return;
+
+      button._releasePending = true;
+    }
+
+    function finishPendingReleases(){
+      controlButtons.forEach(button => {
+        if(
+          button._releasePending &&
+          button._pointers.size === 0 &&
+          button._pressed
+        ){
+          button._releasePending = false;
+          button._pressed = false;
+          button.classList.remove("pressed");
+          pressKey(button.dataset.key, false);
         }
       });
     }
 
     function releaseAll(){
-      if(nes) Object.values(keys).forEach(k=>nes.buttonUp(1,k));
-      document.querySelectorAll("[data-key]").forEach(b=>{
-        b.classList.remove("pressed");
-        b._pressed = false;
+      if(nes){
+        Object.values(keys).forEach(key => {
+          nes.buttonUp(1, key);
+        });
+      }
+
+      controlButtons.forEach(button => {
+        if(button._pointers){
+          button._pointers.clear();
+        }
+
+        button._pressed = false;
+        button._releasePending = false;
+        button.classList.remove("pressed");
       });
     }
 
     async function download(url){
-      const response=await fetch(url,{cache:"force-cache"});
-      if(!response.ok) throw new Error("Không thể tải ROM. HTTP "+response.status);
-      const buffer=await response.arrayBuffer();
-      if(!validRom(buffer)) throw new Error("Link không trả về ROM NES hợp lệ.");
+      const response = await fetch(url, {cache:"force-cache"});
+
+      if(!response.ok){
+        throw new Error("Không thể tải ROM. HTTP " + response.status);
+      }
+
+      const buffer = await response.arrayBuffer();
+
+      if(!validRom(buffer)){
+        throw new Error("Link không trả về ROM NES hợp lệ.");
+      }
+
       return buffer;
     }
 
     async function preload(id){
       if(cache[id]) return cache[id];
-      const el=preloadStatus[id];
+
+      const el = preloadStatus[id];
 
       try{
-        const buffer=await download(GAMES[id].url);
-        cache[id]=buffer;
+        const buffer = await download(GAMES[id].url);
+        cache[id] = buffer;
 
         if(el){
-          el.textContent="Đã sẵn sàng";
+          el.textContent = "Đã sẵn sàng";
           el.classList.add("game-ready");
         }
+
         return buffer;
       }catch(error){
         if(el){
-          el.textContent="Chưa tải được — chạm để thử lại";
+          el.textContent = "Chưa tải được — chạm để thử lại";
           el.classList.remove("game-ready");
         }
+
         throw error;
       }
     }
 
-    function loadBuffer(buffer,name){
-      if(!validRom(buffer)) throw new Error("ROM NES không hợp lệ.");
+    function loadBuffer(buffer, name){
+      if(!validRom(buffer)){
+        throw new Error("ROM NES không hợp lệ.");
+      }
 
       releaseAll();
       createNes();
       nes.loadROM(toBinary(buffer));
 
-      loaded=true;
-      paused=false;
-      pauseButton.textContent="Tạm dừng";
-      gameTitle.textContent=name.toUpperCase();
-      status.textContent="Đang chơi: "+name;
+      loaded = true;
+      paused = false;
+
+      pauseButton.textContent = "Tạm dừng";
+      gameTitle.textContent = name.toUpperCase();
+      status.textContent = "Đang chơi: " + name;
+
       hideMessage();
     }
 
     async function loadGame(id){
-      const current=++token;
-      const game=GAMES[id];
+      const current = ++token;
+      const game = GAMES[id];
 
       try{
-        loaded=false;
-        paused=false;
-        audioQueue=[];
+        loaded = false;
+        paused = false;
+        audioQueue = [];
+
         releaseAll();
 
-        gameTitle.textContent=game.name.toUpperCase();
-        status.textContent="Đang tải "+game.name+"...";
-        showMessage("Đang tải "+game.name,"Vui lòng chờ trong giây lát...");
+        gameTitle.textContent = game.name.toUpperCase();
+        status.textContent = "Đang tải " + game.name + "...";
+        showMessage("Đang tải " + game.name, "Vui lòng chờ trong giây lát...");
 
-        const buffer=cache[id]||await preload(id);
-        if(current!==token) return;
+        const buffer = cache[id] || await preload(id);
 
-        loadBuffer(buffer,game.name);
+        if(current !== token) return;
+
+        loadBuffer(buffer, game.name);
       }catch(error){
-        if(current!==token) return;
-        status.textContent="Không thể tải game";
-        showMessage("Không thể tải game",error.message);
+        if(current !== token) return;
+
+        status.textContent = "Không thể tải game";
+        showMessage("Không thể tải game", error.message);
       }
     }
 
     function loop(){
-      if(loaded&&!paused&&nes) nes.frame();
+      if(loaded && !paused && nes){
+        nes.frame();
+
+        /*
+          Chỉ sau khi NES đã chạy một frame với phím đang DOWN,
+          các cú chạm cực nhanh mới được buttonUp().
+        */
+        finishPendingReleases();
+      }
+
       requestAnimationFrame(loop);
     }
 
-    function pressKey(key,down){
-      if(!loaded||!nes||!(key in keys)) return;
-      initAudio();
-      down?nes.buttonDown(1,keys[key]):nes.buttonUp(1,keys[key]);
-    }
+    /*
+      ===== TOUCH CONTROLS ỔN ĐỊNH CHO SAFARI IOS =====
 
-    // ===== Xử lý sự kiện pointer đã sửa lỗi double buttonUp =====
-    document.querySelectorAll("[data-key]").forEach(button=>{
-      const key=button.dataset.key;
-      const pointers=new Set();
-      // Cờ theo dõi trạng thái nhấn thực sự của nút
+      - Mỗi nút có Set pointer riêng.
+      - Có lostpointercapture để Safari không giữ nút ma.
+      - Không nhả ngay khi pointerup: đợi qua một NES frame.
+      - Khi releaseAll(), mọi pointer cũ được clear hoàn toàn.
+    */
+    controlButtons.forEach(button => {
+      const key = button.dataset.key;
+
+      button._pointers = new Set();
       button._pressed = false;
+      button._releasePending = false;
 
-      const down=e=>{
+      function pointerDown(e){
         e.preventDefault();
-        pointers.add(e.pointerId);
-        try{button.setPointerCapture(e.pointerId)}catch{}
 
-        // Chỉ kích hoạt khi chưa nhấn trước đó
+        button._pointers.add(e.pointerId);
+
+        try{
+          button.setPointerCapture(e.pointerId);
+        }catch(error){}
+
+        /*
+          Nếu vừa thả và đang chờ nhả sau frame,
+          chạm tiếp ngay sẽ hủy nhả, giúp combo/bấm liên tục không bị hụt.
+        */
+        button._releasePending = false;
+
         if(!button._pressed){
           button._pressed = true;
           button.classList.add("pressed");
           pressKey(key, true);
         }
-      };
+      }
 
-      const up=e=>{
+      function pointerUpOrCancel(e){
         e.preventDefault();
-        pointers.delete(e.pointerId);
 
-        // Chỉ nhả khi không còn pointer nào và nút đang ở trạng thái nhấn
-        if(pointers.size===0 && button._pressed){
-          button._pressed = false;
-          button.classList.remove("pressed");
-          pressKey(key, false);
-        }
-      };
+        button._pointers.delete(e.pointerId);
 
-      button.addEventListener("pointerdown", down);
-      button.addEventListener("pointerup", up);
-      button.addEventListener("pointercancel", up);
-      // Bỏ lắng nghe lostpointercapture để tránh nhả phím sớm
-      // button.addEventListener("lostpointercapture", up);
+        try{
+          if(button.hasPointerCapture(e.pointerId)){
+            button.releasePointerCapture(e.pointerId);
+          }
+        }catch(error){}
+
+        releaseAfterNesFrame(button);
+      }
+
+      function lostPointerCapture(e){
+        /*
+          Safari đôi khi tự mất pointer capture.
+          Xóa pointer đó để không bị kẹt phím.
+        */
+        button._pointers.delete(e.pointerId);
+        releaseAfterNesFrame(button);
+      }
+
+      button.addEventListener("pointerdown", pointerDown, {passive:false});
+      button.addEventListener("pointerup", pointerUpOrCancel, {passive:false});
+      button.addEventListener("pointercancel", pointerUpOrCancel, {passive:false});
+      button.addEventListener("lostpointercapture", lostPointerCapture, {passive:false});
+
+      button.addEventListener("contextmenu", e => e.preventDefault());
     });
 
-    const keyboard={
-      ArrowUp:"UP",ArrowDown:"DOWN",ArrowLeft:"LEFT",ArrowRight:"RIGHT",
-      z:"A",Z:"A",x:"B",X:"B",Enter:"START",Shift:"SELECT"
+    const keyboard = {
+      ArrowUp:"UP",
+      ArrowDown:"DOWN",
+      ArrowLeft:"LEFT",
+      ArrowRight:"RIGHT",
+      z:"A",
+      Z:"A",
+      x:"B",
+      X:"B",
+      Enter:"START",
+      Shift:"SELECT"
     };
 
-    window.addEventListener("keydown",e=>{
-      const key=keyboard[e.key];
-      if(!key||e.repeat) return;
+    window.addEventListener("keydown", e => {
+      const key = keyboard[e.key];
+
+      if(!key || e.repeat) return;
+
       e.preventDefault();
-      pressKey(key,true);
+
+      pressKey(key, true);
       document.querySelector(`[data-key="${key}"]`)?.classList.add("pressed");
     });
 
-    window.addEventListener("keyup",e=>{
-      const key=keyboard[e.key];
+    window.addEventListener("keyup", e => {
+      const key = keyboard[e.key];
+
       if(!key) return;
+
       e.preventDefault();
-      pressKey(key,false);
-      document.querySelector(`[data-key="${key}"]`)?.classList.remove("pressed");
+
+      pressKey(key, false);
+
+      const button = document.querySelector(`[data-key="${key}"]`);
+
+      if(button && button._pointers.size === 0){
+        button.classList.remove("pressed");
+      }
     });
 
-    pauseButton.onclick=()=>{
+    pauseButton.onclick = () => {
       if(!loaded) return;
-      paused=!paused;
-      pauseButton.textContent=paused?"Tiếp tục":"Tạm dừng";
-      status.textContent=paused?"Game đang tạm dừng":"Đang chơi";
-      audioQueue=[];
+
+      paused = !paused;
+      pauseButton.textContent = paused ? "Tiếp tục" : "Tạm dừng";
+      status.textContent = paused ? "Game đang tạm dừng" : "Đang chơi";
+
+      audioQueue = [];
       releaseAll();
     };
 
-    soundButton.onclick=()=>{
-      soundOn=!soundOn;
-      soundButton.textContent="Âm thanh: "+(soundOn?"Bật":"Tắt");
-      if(soundOn) initAudio();
-      else audioQueue=[];
+    soundButton.onclick = () => {
+      soundOn = !soundOn;
+      soundButton.textContent = "Âm thanh: " + (soundOn ? "Bật" : "Tắt");
+
+      if(soundOn){
+        initAudio();
+      }else{
+        audioQueue = [];
+      }
     };
 
     function openMenu(){
@@ -1030,80 +1201,88 @@
       gameModal.classList.add("show");
     }
 
-    document.getElementById("gameButton").onclick=openMenu;
-    document.getElementById("landscapeMenuButton").onclick=openMenu;
+    document.getElementById("gameButton").onclick = openMenu;
+    document.getElementById("landscapeMenuButton").onclick = openMenu;
 
-    document.getElementById("closeGameModal").onclick=()=>{
+    document.getElementById("closeGameModal").onclick = () => {
       gameModal.classList.remove("show");
     };
 
-    gameModal.onclick=e=>{
-      if(e.target===gameModal) gameModal.classList.remove("show");
+    gameModal.onclick = e => {
+      if(e.target === gameModal){
+        gameModal.classList.remove("show");
+      }
     };
 
-    document.getElementById("openFileButton").onclick=()=>{
+    document.getElementById("openFileButton").onclick = () => {
       gameModal.classList.remove("show");
       fileInput.click();
     };
 
-    document.getElementById("adventureButton").onclick=()=>{
+    document.getElementById("adventureButton").onclick = () => {
       gameModal.classList.remove("show");
       loadGame("adventure");
     };
 
-    document.getElementById("contra2Button").onclick=()=>{
+    document.getElementById("contra2Button").onclick = () => {
       gameModal.classList.remove("show");
       loadGame("contra2");
     };
 
-    document.getElementById("chessButton").onclick=()=>{
+    document.getElementById("chessButton").onclick = () => {
       gameModal.classList.remove("show");
       loadGame("chess");
     };
 
-    fileInput.onchange=e=>{
-      const file=e.target.files[0];
+    fileInput.onchange = e => {
+      const file = e.target.files[0];
       if(!file) return;
 
-      const current=++token;
-      const name=file.name.replace(/\.nes$/i,"");
-      const reader=new FileReader();
+      const current = ++token;
+      const name = file.name.replace(/\.nes$/i, "");
+      const reader = new FileReader();
 
-      status.textContent="Đang đọc ROM từ máy...";
-      showMessage("Đang mở game","Đang đọc ROM từ thiết bị...");
+      status.textContent = "Đang đọc ROM từ máy...";
+      showMessage("Đang mở game", "Đang đọc ROM từ thiết bị...");
 
-      reader.onload=()=>{
-        if(current!==token) return;
+      reader.onload = () => {
+        if(current !== token) return;
+
         try{
-          loadBuffer(reader.result,name);
+          loadBuffer(reader.result, name);
         }catch(error){
-          status.textContent="Không thể mở file";
-          showMessage("Không thể mở game",error.message);
+          status.textContent = "Không thể mở file";
+          showMessage("Không thể mở game", error.message);
         }
       };
 
       reader.readAsArrayBuffer(file);
-      fileInput.value="";
+      fileInput.value = "";
     };
 
-    window.addEventListener("blur",releaseAll);
+    window.addEventListener("blur", () => {
+      audioQueue = [];
+      releaseAll();
+    });
 
-    document.addEventListener("visibilitychange",()=>{
-      if(document.hidden&&loaded&&!paused){
-        paused=true;
-        pauseButton.textContent="Tiếp tục";
-        status.textContent="Game đang tạm dừng";
-        audioQueue=[];
+    document.addEventListener("visibilitychange", () => {
+      if(document.hidden && loaded && !paused){
+        paused = true;
+        pauseButton.textContent = "Tiếp tục";
+        status.textContent = "Game đang tạm dừng";
+
+        audioQueue = [];
         releaseAll();
       }
     });
 
     loop();
+
     loadGame("mario");
 
-    preload("adventure").catch(()=>{});
-    preload("contra2").catch(()=>{});
-    preload("chess").catch(()=>{});
+    preload("adventure").catch(() => {});
+    preload("contra2").catch(() => {});
+    preload("chess").catch(() => {});
   </script>
 </body>
 </html>
