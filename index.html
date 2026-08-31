@@ -202,7 +202,7 @@
       box-shadow:0 5px 0 #0a0f1d,0 8px 14px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.16);
       font-weight:900;
       cursor:pointer;
-      touch-action:none;
+      touch-action:none; /* explicit to prevent gestures interfering */
     }
 
     .dpad .control{
@@ -291,6 +291,8 @@
       font-size:clamp(17px,5vw,24px);
       background:linear-gradient(145deg,#ff7180,#bd2548);
       border-color:#ff9eaa;
+      z-index:2;
+      touch-action:none;
     }
 
     .round.b{
@@ -657,26 +659,26 @@
     </div>
 
     <div class="controls">
-      <div class="dpad">
-        <button class="control up" data-key="UP" aria-label="Lên">
+      <div class="dpad" aria-hidden="false">
+        <button class="control up" data-key="UP" aria-label="Lên" role="button" aria-pressed="false">
           <svg class="dpad-arrow" viewBox="0 0 24 24">
             <path d="M12 4L4.5 12H9v8h6v-8h4.5L12 4z"/>
           </svg>
         </button>
 
-        <button class="control down" data-key="DOWN" aria-label="Xuống">
+        <button class="control down" data-key="DOWN" aria-label="Xuống" role="button" aria-pressed="false">
           <svg class="dpad-arrow" viewBox="0 0 24 24">
             <path d="M12 20l7.5-8H15V4H9v8H4.5l7.5 8z"/>
           </svg>
         </button>
 
-        <button class="control left" data-key="LEFT" aria-label="Trái">
+        <button class="control left" data-key="LEFT" aria-label="Trái" role="button" aria-pressed="false">
           <svg class="dpad-arrow" viewBox="0 0 24 24">
             <path d="M4 12l8-7.5V9h8v6h-8v4.5L4 12z"/>
           </svg>
         </button>
 
-        <button class="control right" data-key="RIGHT" aria-label="Phải">
+        <button class="control right" data-key="RIGHT" aria-label="Phải" role="button" aria-pressed="false">
           <svg class="dpad-arrow" viewBox="0 0 24 24">
             <path d="M20 12l-8 7.5V15H4V9h8V4.5l8 7.5z"/>
           </svg>
@@ -686,8 +688,8 @@
       </div>
 
       <div class="right-controls">
-        <button class="control round b" data-key="B" data-label="B">B</button>
-        <button class="control round a" data-key="A" data-label="A">A</button>
+        <button class="control round b" data-key="B" data-label="B" role="button" aria-pressed="false">B</button>
+        <button class="control round a" data-key="A" data-label="A" role="button" aria-pressed="false">A</button>
       </div>
     </div>
 
@@ -941,6 +943,7 @@
           button._releasePending = false;
           button._pressed = false;
           button.classList.remove("pressed");
+          button.setAttribute("aria-pressed", "false");
           pressKey(button.dataset.key, false);
         }
       });
@@ -954,6 +957,22 @@
       }
 
       controlButtons.forEach(button => {
+        // Nếu còn pointerIds, cố gắng releasePointerCapture cho từng cái
+        if(button._pointers && button._pointers.size){
+          for(const pid of Array.from(button._pointers)){
+            try{
+              if(typeof button.hasPointerCapture === 'function' && button.hasPointerCapture(pid)){
+                button.releasePointerCapture(pid);
+              }else if(typeof button.releasePointerCapture === 'function'){
+                // nếu hasPointerCapture không tồn tại, vẫn thử release để tránh kẹt
+                button.releasePointerCapture(pid);
+              }
+            }catch(e){
+              // bỏ qua lỗi (trình duyệt ko hỗ trợ hoặc pointer đã release)
+            }
+          }
+        }
+
         if(button._pointers){
           button._pointers.clear();
         }
@@ -961,6 +980,7 @@
         button._pressed = false;
         button._releasePending = false;
         button.classList.remove("pressed");
+        button.setAttribute("aria-pressed", "false");
       });
     }
 
@@ -1082,13 +1102,19 @@
       button._releasePending = false;
 
       function pointerDown(e){
+        // chỉ xử lý các pointer hợp lệ (touch/pen/mouse)
         e.preventDefault();
 
+        // nếu pointer đã có trong set thì chỉ giữ trạng thái
         button._pointers.add(e.pointerId);
 
         try{
-          button.setPointerCapture(e.pointerId);
-        }catch(error){}
+          if(typeof button.setPointerCapture === 'function'){
+            button.setPointerCapture(e.pointerId);
+          }
+        }catch(error){
+          // ignore
+        }
 
         /*
           Nếu vừa thả và đang chờ nhả sau frame,
@@ -1099,6 +1125,7 @@
         if(!button._pressed){
           button._pressed = true;
           button.classList.add("pressed");
+          button.setAttribute("aria-pressed", "true");
           pressKey(key, true);
         }
       }
@@ -1106,13 +1133,19 @@
       function pointerUpOrCancel(e){
         e.preventDefault();
 
+        // xóa pointerId
         button._pointers.delete(e.pointerId);
 
         try{
-          if(button.hasPointerCapture(e.pointerId)){
+          if(typeof button.hasPointerCapture === 'function' && button.hasPointerCapture(e.pointerId)){
+            button.releasePointerCapture(e.pointerId);
+          }else if(typeof button.releasePointerCapture === 'function'){
+            // cố gắng release để tránh kẹt
             button.releasePointerCapture(e.pointerId);
           }
-        }catch(error){}
+        }catch(error){
+          // ignore
+        }
 
         releaseAfterNesFrame(button);
       }
@@ -1126,6 +1159,7 @@
         releaseAfterNesFrame(button);
       }
 
+      // dùng passive:false để e.preventDefault() có hiệu lực
       button.addEventListener("pointerdown", pointerDown, {passive:false});
       button.addEventListener("pointerup", pointerUpOrCancel, {passive:false});
       button.addEventListener("pointercancel", pointerUpOrCancel, {passive:false});
@@ -1156,6 +1190,7 @@
 
       pressKey(key, true);
       document.querySelector(`[data-key="${key}"]`)?.classList.add("pressed");
+      document.querySelector(`[data-key="${key}"]`)?.setAttribute("aria-pressed", "true");
     });
 
     window.addEventListener("keyup", e => {
@@ -1171,6 +1206,7 @@
 
       if(button && button._pointers.size === 0){
         button.classList.remove("pressed");
+        button.setAttribute("aria-pressed", "false");
       }
     });
 
