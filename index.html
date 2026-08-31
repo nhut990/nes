@@ -855,7 +855,7 @@
           ctx.putImageData(imageData,0,0);
         },
         onAudioSample(left,right){
-          if(audioQueue.length<12000) audioQueue.push(left,right);
+          if(soundOn && audioQueue.length<12000) audioQueue.push(left,right);
         }
       });
     }
@@ -863,6 +863,8 @@
     function releaseAll(){
       if(nes) Object.values(keys).forEach(k=>nes.buttonUp(1,k));
       document.querySelectorAll("[data-key]").forEach(b=>b.classList.remove("pressed"));
+      // Đặt cờ pressed của mỗi nút về false nếu có
+      document.querySelectorAll("[data-key]").forEach(b=>{ b._pressed = false; });
     }
 
     async function download(url){
@@ -946,31 +948,43 @@
       down?nes.buttonDown(1,keys[key]):nes.buttonUp(1,keys[key]);
     }
 
+    // ===== Xử lý sự kiện pointer đã sửa lỗi double buttonUp =====
     document.querySelectorAll("[data-key]").forEach(button=>{
       const key=button.dataset.key;
       const pointers=new Set();
+      // Cờ theo dõi trạng thái nhấn thực sự của nút
+      button._pressed = false;
 
       const down=e=>{
         e.preventDefault();
         pointers.add(e.pointerId);
         try{button.setPointerCapture(e.pointerId)}catch{}
-        button.classList.add("pressed");
-        pressKey(key,true);
+
+        // Chỉ kích hoạt khi chưa nhấn trước đó
+        if(!button._pressed){
+          button._pressed = true;
+          button.classList.add("pressed");
+          pressKey(key, true);
+        }
       };
 
       const up=e=>{
         e.preventDefault();
         pointers.delete(e.pointerId);
-        if(!pointers.size){
+
+        // Chỉ nhả khi không còn pointer nào và nút đang ở trạng thái nhấn
+        if(pointers.size===0 && button._pressed){
+          button._pressed = false;
           button.classList.remove("pressed");
-          pressKey(key,false);
+          pressKey(key, false);
         }
       };
 
-      button.addEventListener("pointerdown",down);
-      button.addEventListener("pointerup",up);
-      button.addEventListener("pointercancel",up);
-      button.addEventListener("lostpointercapture",up);
+      button.addEventListener("pointerdown", down);
+      button.addEventListener("pointerup", up);
+      button.addEventListener("pointercancel", up);
+      // Vẫn lắng nghe lostpointercapture để dọn dẹp, nhưng đã có cờ chặn double
+      button.addEventListener("lostpointercapture", up);
     });
 
     const keyboard={
